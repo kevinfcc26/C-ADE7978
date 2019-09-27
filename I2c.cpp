@@ -10,8 +10,8 @@
 #include <fstream>
 #include <ctime>
 
-#define IRQ1_N 11;
-#define IRQ0_N 4;
+#define IRQ1_N 11
+#define IRQ0_N 4
 
 using namespace std;
 using json = nlohmann::json;
@@ -21,7 +21,7 @@ void Config_registers();
 void Burst_mode();
 void Run_DSP();
 void Stop_DSP();
-void Initializing the chipset();
+void Initializing_the_chipset();
 
 typedef enum {
     NO_ACTION,
@@ -501,7 +501,7 @@ void Initializing_the_chipset(){
     printf("RSTDONE se encuentra en 1\n Cargando 1 en todas las banderas de STATUS0 y STATUS1...\n");
     Objregister[89].SetValue(0x7FFFF);
     Objregister[89].Write();
-    Objregister[90].SetValue(3FFFFFF);
+    Objregister[90].SetValue(0x3FFFFFF);
     Objregister[90].Write();
     printf("Done\n");
     //Escribir un 1 en el bit 0 del resgitro CONFIG2
@@ -511,10 +511,10 @@ void Initializing_the_chipset(){
     printf("Done\n");
     //Escribir 0 en los registros (0x4380,0x4383,0x4386,0x4389)
     printf("Escribiendo 0 es los registros...\n");
-    for(i=0;i<10){
+    for(i=0;i<10;i+=3){
             Objregister[i].SetValue(0x0);
             Objregister[i].Write();
-            i=i+3;
+           // i=i+3;
     }
     printf("Done\n");
     //Escribir un 1 en el registro RUN(0xE228)
