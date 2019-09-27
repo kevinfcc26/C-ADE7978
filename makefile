@@ -6,4 +6,4 @@ I2c: I2c.o
 I2c.o: I2c.cpp
 	g++ -c -o I2c.o I2c.cpp
 clean :
-	rm I2c I2c.o
+	rm I2c.o
