@@ -16,7 +16,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-void Red_all_registers();
+void Read_all_registers();
 void Config_registers();
 void Burst_mode();
 void Run_DSP();
@@ -114,15 +114,15 @@ void Registro::Read(){
     bcm2835_i2c_read_register_rs(dir,buf,Len_dato);
     
     
-    for (i=0; i<Len_dato; i++) {
+    /*for (i=0; i<Len_dato; i++) {
                 if(buf[i] != 'n') printf("Read Buf[%d] = %x\n", i, buf[i]);
-        }
+        }*/
     for(i=0;i<Len_dato;i++){
 		Value +=buf[i]<<8*(Len_dato-i-1); 
 	}
     bcm2835_i2c_end();   
     bcm2835_close();
-    printf("Value leido 0x%x \n", Value);
+    //printf("Value leido 0x%x \n", Value);
 }
 //Fucion Write
 void Registro::Write(){
@@ -157,13 +157,13 @@ void Registro::Write(){
     bcm2835_i2c_setSlaveAddress(slave_address);
     //Cargar clock
     bcm2835_i2c_setClockDivider(clk_div);
-    cout<<"Name del registro: "<<Name<<endl;
-    printf("La dirección es:0x%x \n",Adress);
-    printf("Longitud del dato %d byte\n", Len_dato);  
+    //cout<<"Name del registro: "<<Name<<endl;
+    //printf("La dirección es:0x%x \n",Adress);
+    //printf("Longitud del dato %d byte\n", Len_dato);  
     
     bcm2835_i2c_write(wbuf,Len_dato+2);
     
-    printf("Value= %d\n",Value);
+    //printf("Value= %d\n",Value);
     bcm2835_i2c_end();   
     bcm2835_close();
 }
@@ -330,7 +330,7 @@ void Config_registers(){
 
     Objregister[139].Config_Obj("LINECYC",0XE60C,2);
     Objregister[140].Config_Obj("ZXTOUT",0XE60D,2);
-    Objregister[141].Config_Obj("CAMPMODE",0XE60E,2);
+    Objregister[141].Config_Obj("COMPMODE",0XE60E,2);
 
     Objregister[142].Config_Obj("CFMODE",0XE610,2);
     Objregister[143].Config_Obj("CF1DEN",0XE611,2);
@@ -377,7 +377,7 @@ void Config_registers(){
     Objregister[180].Config_Obj("VATHR",0xEA04,1);
 }
 //Función para leer todos los registros de una sola vez
-void Red_all_registers(){
+void Read_all_registers(){
     int i=0,Valueobj=0,a;
     string Nameobj;
     //unsigned t0,t1;
@@ -398,15 +398,17 @@ void Red_all_registers(){
         }
         else{*/
             
-            for(a=0;a<10;a++){
+           // for(a=0;a<10;a++){
                 
                 Objregister[i].Read();
                 Valueobj=Objregister[i].GetValue();
                 Nameobj=Objregister[i].GetName();
                 dataj["registers"][Nameobj][a]=Valueobj;
+                cout<<Nameobj;
+                printf(" = %x\n",Valueobj);
             
               
-            }
+            //}
             i++; 
        // }
     }
@@ -486,15 +488,16 @@ void Initializing_the_chipset(){
     
     //Comprobar que el pin IRQ1 este en 0
     while(bcm2835_gpio_lev(IRQ1_N)){
-        printf("El pin IRQ1 esta en 1");
+        printf("El pin IRQ1 esta en 1\n");
     }
-    printf("El pin se encuentra en 0");
+    printf("El pin IRQ1_N se encuentra en 0\n");
     //Leer el registro STATUS y comrobar que el bit 15(RSTDONE) esta en 1
     Objregister[90].Read();
     Value=Objregister[90].GetValue();
     Name=Objregister[90].GetName();
-    cout<<"el nombre del resgitro es"<<Name;
-    if(Value & 0x8000 != 0x8000){
+    cout<<"el nombre del resgitro es "<<Name<<"\n";
+    printf("Value= %x\n",Value);
+    if((Value & 0x8000) != 0x8000){
         printf("RSTDONE se encuentra en 0\n");
         return;
     }
@@ -510,7 +513,7 @@ void Initializing_the_chipset(){
     Objregister[176].Write();
     printf("Done\n");
     //Escribir 0 en los registros (0x4380,0x4383,0x4386,0x4389)
-    printf("Escribiendo 0 es los registros...\n");
+    printf("Escribiendo 0 es los registros (0x4380,0x4383,0x4386,0x4389)...\n");
     for(i=0;i<10;i+=3){
             Objregister[i].SetValue(0x0);
             Objregister[i].Write();
@@ -518,8 +521,11 @@ void Initializing_the_chipset(){
     }
     printf("Done\n");
     //Escribir un 1 en el registro RUN(0xE228)
+    printf("Iniciando DSP\n");
     Run_DSP();
+    printf("Donde\n");
     //Inicializar todos los registros desde (0x4380 to 0x43BF) y escribir el ultimo 3 veces
+    printf("Inicializando todos los resgistros desde (0x4380 to 0x43BF)\n");
     for(i=0;i<=55;i++){
         Objregister[i].SetValue(0x0);
         Objregister[i].Write();
@@ -528,7 +534,111 @@ void Initializing_the_chipset(){
             Objregister[i].Write();
         }
     }
+    printf("Done\n");
+    //inicializar los registros de configuracion basados en hardware localizacon desde (0xE507 a 0x5A04)
+    printf("Iniciando todos los registros de configuracioin de hardware\n");
+    //OILVL
+    Objregister[91].SetValue(0xFFFFFF);
+    //OVLVL
+    Objregister[92].SetValue(0xFFFFFF);
+    //SAGLVL
+    Objregister[93].SetValue(0x0);
+    //MASKO
+    Objregister[94].SetValue(0x20000);
+    //MASK1
+    Objregister[95].SetValue(0x0);
     
+    for(i=91;i<=95;i++){
+        Objregister[i].Write();
+    }
+    //VNOM
+    Objregister[126].SetValue(0x0);
+    Objregister[126].Write();
+    //LINECYC
+    Objregister[139].SetValue(0xFFFF);
+    //ZXOUT
+    Objregister[140].SetValue(0xFFFF);
+    //COMPMODE
+    Objregister[141].SetValue(0x4000);
+    for(i=139;i<=141;i++){
+        Objregister[i].Write();
+    }
+    //CF1DEN
+    Objregister[143].SetValue(0x0);
+    //CF2DEN
+    Objregister[144].SetValue(0x0);
+    //CF3DEN
+    Objregister[145].SetValue(0x0);
+    //APHCAL
+    Objregister[146].SetValue(0x0);
+    //BPHCAL
+    Objregister[147].SetValue(0x0);
+    //CPHCAL
+    Objregister[148].SetValue(0x0);
+    for(i=143;i<=148;i++){
+        Objregister[i].Write();
+    }
+    //PHSING
+    //Objregister[149].SetValue(0x0);
+    //HSDC_CFG
+    Objregister[157].SetValue(0x0);
+    Objregister[157].Write();
+    //CONFIG
+    Objregister[150].SetValue(0x0050);
+    Objregister[150].Write();
+    //MMODE
+    Objregister[151].SetValue(0x1C);
+    //ACCMODE
+    Objregister[152].SetValue(0x80);
+    //LCYCMODE
+    Objregister[153].SetValue(0x78);
+    //PEAKCYC
+    Objregister[154].SetValue(0x0);
+    //SAGCYC
+    Objregister[155].SetValue(0x0);
+    //CFCYC
+    Objregister[156].SetValue(0x01);
+    
+    
+    for(i=151;i<=156;i++){
+        Objregister[i].Write();
+    }
+    //CONFIG3
+    Objregister[159].SetValue(0xF);
+    Objregister[159].Write();
+    //APNOLOAD
+    Objregister[171].SetValue(0x0000);
+    //VARNOLOAD
+    Objregister[172].SetValue(0x0000);
+    //VANOLOAD
+    Objregister[173].SetValue(0x0000);
+    for(i=171;i<=173;i++){
+        Objregister[i].Write();
+    }
+    //CONFIG2
+    Objregister[176].SetValue(0x1);
+    Objregister[176].Write();
+    //WTHR, VARTHR, VATHR
+    for(i=178;i<=180;i++){
+        Objregister[i].SetValue(0x03);
+        Objregister[i].Write();
+    }
+    printf("Done\n");
+    //Leer todos los registros xWATTHR, xVARHR, xFWATTHR, xFVARHR, and xVAHR
+    printf("leyendo registros de potencia para reiniciarlos\n");
+    for(i=72;i<=86;i++){
+        Objregister[i].Read();
+    }
+    printf("Done");
+    //limbiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS), and Bit 11 (CF3DIS)
+    printf("limbiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS), and Bit 11 (CF3DIS)\n");
+    Objregister[142].SetValue(0x88);
+    printf("Done\n");
+    
+    //leer todos los registros para saber que estan bien escritos
+    printf("Leyendo todos los registros de la DSP\n");
+    Read_all_registers();
+    printf("Done\n");
     
     
 }
@@ -536,8 +646,12 @@ int main() {
     int i=0,Valueobj;
     string Nameobj;
     //unsigned t0,t1;  
+    //Iniciar el bus de la rasberry
     bcm2835_init();
+    //configurar los registros como Objetos
     Config_registers();
+    //Pasos para inicializar el CHIP ADE
+    Initializing_the_chipset();
     // read a JSON file
     //std::ifstream a("/home/pi/Desktop/Programa/ade-metering-angular/src/data.json");
     //a >> dataj;
@@ -550,7 +664,7 @@ int main() {
     
     
     auto Write = modificadorj.find("Write");
-    Run_DSP();
+    //Run_DSP();
     //Burst_mode();
     //Stop_DSP();
     while(1){
@@ -565,12 +679,9 @@ int main() {
             t0=clock();
             //Run_DSP();
             for(Samples=0;Samples<=100;Samples++){
-                Burst_mode();            
+                Burst_mode(); 
+                delay(100);
             }
-           
-            //Stop_DSP();
-            //Burst_mode();
-            //Red_all_registers();
             b.open("modificador.json");
             b >> modificadorj;
             Write = modificadorj.find("Write");
@@ -582,9 +693,9 @@ int main() {
             double time = (double(t1-t0)/CLOCKS_PER_SEC);
             //dataj[std::to_string(Samples_)][std::to_string(time)]=time;
             cout << "Execution Time: " << time << endl;
-            
         }
-        Stop_DSP();
+        //Stop_DSP();
+        //Objregister[100].Read();
         sleep(1);
     }
     
