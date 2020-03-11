@@ -581,7 +581,7 @@ void Initializing_the_chipset(){
     //PHSING
     //Objregister[149].SetValue(0x0);
     //HSDC_CFG
-    Objregister[157].SetValue(0x0);
+    Objregister[157].SetValue(0x1);
     Objregister[157].Write();
     //CONFIG
     Objregister[150].SetValue(0x0050);
