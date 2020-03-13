@@ -641,7 +641,7 @@ int main() {
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode();   
                 bcm2835_close();
-                //delay(1);
+                delay(1);
             }
             b.open("modificador.json");
             b >> modificadorj;
