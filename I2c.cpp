@@ -654,7 +654,9 @@ int main() {
             cout << "Execution Time: " << time << endl;
         }
         Stop_DSP();
+        bcm2835_close();
         sleep(1);
+        
     }
     bcm2835_close();
     return 0;
