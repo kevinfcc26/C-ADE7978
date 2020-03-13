@@ -96,7 +96,7 @@ void Registro::Read(){
     dir[1]=Adress & 0xFF;
     dir[0]=Adress>>8 & 0xFF;
     //iniciar puerto raspberry
-    //bcm2835_init();
+    bcm2835_init();
     init = I2C_BEGIN;
     if (!bcm2835_init()){
       printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
