@@ -96,7 +96,7 @@ void Registro::Read(){
     dir[1]=Adress & 0xFF;
     dir[0]=Adress>>8 & 0xFF;
     //iniciar puerto raspberry
-    bcm2835_init();
+    //bcm2835_init();
     init = I2C_BEGIN;
     if (!bcm2835_init()){
       printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
@@ -140,7 +140,7 @@ void Registro::Write(){
         wbuf[Len_dato+2-i-1] = (Value >> 8*i) & 0xFF;
     }
     //iniciar puertos raspberry
-    bcm2835_init();
+    //bcm2835_init();
    init = I2C_BEGIN;
     if (!bcm2835_init()){
       printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
@@ -402,9 +402,9 @@ void Burst_mode(){
     //iniciar puerto raspberry
     //bcm2835_init();
     init = I2C_BEGIN;
-    if (!bcm2835_init()){
-      printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
-    }
+    // if (!bcm2835_init()){
+    //   printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
+    // }
     // I2C begin if specified    
     if (init == I2C_BEGIN){
       if (!bcm2835_i2c_begin()){
@@ -436,7 +436,7 @@ void Burst_mode(){
     }
     // Se termina la comunicación para no saturar el bus
     bcm2835_i2c_end();   
-    bcm2835_close();
+    // bcm2835_close();
 }
 //Función para iniciar DSP
 void Run_DSP(){
