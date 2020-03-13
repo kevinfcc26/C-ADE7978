@@ -614,7 +614,7 @@ int main() {
     int i=0,Valueobj,tempstop=0;
     string Nameobj;  
     //Iniciar el bus de la rasberry
-    //bcm2835_init();
+    bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
     //Pasos para inicializar el CHIP ADE
