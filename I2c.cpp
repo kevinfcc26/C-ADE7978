@@ -611,7 +611,7 @@ void Initializing_the_chipset(){
 
 //Programa principal
 int main() {
-    int i=0,Valueobj;
+    int i=0,Valueobj,tempstop=0;
     string Nameobj;  
     //Iniciar el bus de la rasberry
     bcm2835_init();
@@ -653,10 +653,15 @@ int main() {
             double time = (double(t1-t0)/CLOCKS_PER_SEC);
             //dataj[std::to_string(Samples_)][std::to_string(time)]=time;
             cout << "Execution Time: " << time << endl;
+            if(tempstop==1){tempstop=0;}
         }
-        Stop_DSP();
-        bcm2835_close();
-        //sleep(1);
+        while(tempstop==0){
+            Stop_DSP();
+            tempstop=1;
+        }
+        
+        //bcm2835_close();
+        sleep(1);
         
     }
     bcm2835_close();
