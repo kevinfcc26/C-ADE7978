@@ -640,7 +640,7 @@ int main() {
             Run_DSP();
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode(); 
-                //delay(10);
+                delay(1);
             }
             b.open("modificador.json");
             b >> modificadorj;
