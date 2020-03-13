@@ -10,18 +10,20 @@
 #include <fstream>
 #include <ctime>
 
-#define IRQ1_N 11
+#define IRQ1_N 11 //
 #define IRQ0_N 4
 
 using namespace std;
-using json = nlohmann::json;
+using json = nlohmann::json; // Objeto para manejar los datos en formato Json
 
-void Read_all_registers();
-void Config_registers();
-void Burst_mode();
-void Run_DSP();
-void Stop_DSP();
-void Initializing_the_chipset();
+//  Funciones globales  
+
+void Read_all_registers(); //Función para leer todos los registros 
+void Config_registers(); //Función para declarar todos los parametros de los registros tomados como objetos
+void Burst_mode(); //Función para leer todos los registros de energia
+void Run_DSP(); //Pone en marcha la dsp
+void Stop_DSP(); // Apaga la dsp
+void Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
 
 typedef enum {
     NO_ACTION,
@@ -31,8 +33,9 @@ typedef enum {
 
 //configuracion del clk y la direcciones del dispositivo esclavo
 uint8_t  init = NO_ACTION;
-uint16_t clk_div = BCM2835_I2C_CLOCK_DIVIDER_626;
-uint8_t slave_address = 0x38;
+uint16_t clk_div = BCM2835_I2C_CLOCK_DIVIDER_626; // Clock establecido a 399.3610 kHz
+uint8_t slave_address = 0x38; // Dirección de la tarjeta para el puerto I2C
+
 unsigned t0,t1;
 int Samples;
 
@@ -42,35 +45,41 @@ json dataj,modificadorj;
 //clase para los registros de la dsp
 class Registro{
     private:
-        int Adress;
-        int Len_dato;
-        string Name;
-        int Value;
+        int Adress; //Dirección en exadecimal del registro
+        int Len_dato; // Longitud del dato esperado
+        string Name; // Nombre del registro
+        int Value; // Valor escrito o leido del registro
         
     public:
-        Registro(string,int,int);
-        Registro(){};
-        string GetName();
-        float GetValue();
-        void Read();
-        void Write();
-        void SetValue(int _Value);
-        void Config_Obj(string _Name,int _Adress,int _Len_dato);
+        Registro(string,int,int); //1 contructor
+        Registro(){}; //2 constructor
+        string GetName(); //Función para optener el nombre
+        float GetValue(); //Función para optener el valor
+        void Read(); //Funciónn para optener los datos de la dsp
+        void Write(); //Función para escribir en la dsp
+        void SetValue(int _Value); //Función para cargar un valor en la variable Valor del objeto
+        void Config_Obj(string _Name,int _Adress,int _Len_dato); //Funcion para modificar los datos de los objetos
 };
+
+// 1 contrusctor de objetos
 Registro::Registro (string _Name,int _Adress, int _Len_dato){
     Name = _Name;
     Adress = _Adress;
     Len_dato = _Len_dato;
 }
+// Obtiene el nombre del objeto privado
 string Registro::GetName(){
 return Name;
 }
+// Obtiene el valor del objeto privado
 float Registro::GetValue(){
     return Value;
 }
+// Modifica el valor del objeto
 void Registro::SetValue(int _Value){
 Value=_Value;
 }
+//Carga todos los valores del objeto
 void Registro::Config_Obj(string _Name,int _Adress,int _Len_dato){
     Name = _Name;
     Adress = _Adress;
@@ -79,8 +88,8 @@ void Registro::Config_Obj(string _Name,int _Adress,int _Len_dato){
 //Función Read
 void Registro::Read(){
     int i=0;
-    char dir[2];
-    char buf[Len_dato];
+    char dir[2]; // variable para separar la dirección en dos partes de 8 bits
+    char buf[Len_dato]; // Tamaño del dato esperado
     //limpiar el Value del dato
     Value=0;
     //separar la dirección del registro en dos partes para enviarla por el bus
@@ -89,92 +98,81 @@ void Registro::Read(){
     //iniciar puerto raspberry
     //bcm2835_init();
     init = I2C_BEGIN;
-    if (!bcm2835_init())
-    {
-      printf("bcm2835_init failed. Are you running as root??\n");
+    if (!bcm2835_init()){
+      printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
     }
     // I2C begin if specified    
-    if (init == I2C_BEGIN)
-    {
+    if (init == I2C_BEGIN){
       if (!bcm2835_i2c_begin())
       {
-        printf("bcm2835_i2c_begin failed. Are you running as root??\n");
+        printf("Falló bcm2835_begin, corra el programa con permisos de administrador\n");//("bcm2835_i2c_begin failed. Are you running as root??\n");
       }
     }
     //Cargar dirección del esclavo
     bcm2835_i2c_setSlaveAddress(slave_address);
     //Cargar la frecuencia del clock
     bcm2835_i2c_setClockDivider(clk_div);
-    //cout<<"Name del registro: "<<Name<<endl;
-    //printf("La dirección es:0x%x%x \n", dir[0],dir[1]);
-    //printf("Longitud del dato %d byte\n", Len_dato);
-    //Cargar variable buf con el Value
     
-    
+    //Cargar variable buf con el Value  
     bcm2835_i2c_read_register_rs(dir,buf,Len_dato);
-    
-    
-    /*for (i=0; i<Len_dato; i++) {
-                if(buf[i] != 'n') printf("Read Buf[%d] = %x\n", i, buf[i]);
-        }*/
+    //se carga el valor uniendo los dos bytes reibidos
     for(i=0;i<Len_dato;i++){
 		Value +=buf[i]<<8*(Len_dato-i-1); 
 	}
+    //termina la comunicación para no sobresaturar el puerto
     bcm2835_i2c_end();   
     bcm2835_close();
-    //printf("Value leido 0x%x \n", Value);
 }
+
 //Fucion Write
 void Registro::Write(){
     int i;
-    char wbuf[Len_dato+2];
+    char wbuf[Len_dato+2]; //crar el bus con el ancho del dato enviado mas dos bytes de la dirección del registro
     //limpiar buf
     for(i=0;i<Len_dato+2;i++){
-	wbuf[i]=0;
+	    wbuf[i]=0;
     }
     //separar la dirección del registro en dos partes para enviarla por el bus
     wbuf[1]=Adress & 0xFF;
     wbuf[0]=Adress>>8 & 0xFF;
+    // Se arma el dato que va a enviar con la direccion del registro
     for(i=0;i<Len_dato;i++){
         wbuf[Len_dato+2-i-1] = (Value >> 8*i) & 0xFF;
     }
-    /*for(i=0;i<Len_dato+2;i++){
-        printf("Write wbuf[%d] = %x\n", i, wbuf[i]);
-    }*/
     //iniciar puertos raspberry
     bcm2835_init();
-    init = I2C_BEGIN;
+   init = I2C_BEGIN;
     if (!bcm2835_init()){
-      printf("bcm2835_init failed. Are you running as root??\n");
+      printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
     }
     // I2C begin if specified    
     if (init == I2C_BEGIN){
-      if (!bcm2835_i2c_begin()){
-        printf("bcm2835_i2c_begin failed. Are you running as root??\n");
+      if (!bcm2835_i2c_begin())
+      {
+        printf("Falló bcm2835_begin, corra el programa con permisos de administrador\n");//("bcm2835_i2c_begin failed. Are you running as root??\n");
       }
     }
     //Cargar dirección del esclavo
     bcm2835_i2c_setSlaveAddress(slave_address);
     //Cargar clock
-    bcm2835_i2c_setClockDivider(clk_div);
-    //cout<<"Name del registro: "<<Name<<endl;
-    //printf("La dirección es:0x%x \n",Adress);
-    //printf("Longitud del dato %d byte\n", Len_dato);  
+    bcm2835_i2c_setClockDivider(clk_div);  
     
     bcm2835_i2c_write(wbuf,Len_dato+2);
     
-    //printf("Value= %d\n",Value);
+    //Terminar la comunicación para que el bus no se sature
     bcm2835_i2c_end();   
     bcm2835_close();
 }
+
 //Arreglo de objetos
+// Primero se crea el arreglo de objetos y despues se le pasan los valores 
 Registro Objregister[181];
 //Configurar Registros como objetos pasando ("Name",Adress,tamaño del dato en la memoria de la dsp en byte)
 void Config_registers(){
-    //objetos generales ("Name",Direccíón,Lonjitud del dato,Tipo de dato)
+    //Objetos generales ("Name",Direccíón,Lonjitud del dato,Tipo de dato)
     //Tipo de dato Normal=0, ZPSE=1, ZP=2, SE=3
+
     //Table 39 Registers Located in DSP Data Memory RAM
-    Objregister[181].Config_Obj("PRUEBA",0x0000,4);
     Objregister[0].Config_Obj("AIGAIN",0X4380,4);
 
     Objregister[1].Config_Obj("AVGAIN",0X4381,4);
@@ -268,8 +266,8 @@ void Config_registers(){
     Objregister[84].Config_Obj("AVAHR",0XE40C,4);
     Objregister[85].Config_Obj("BVAHR",0XE40D,4);
     Objregister[86].Config_Obj("CVAHR",0XE40E,4);
+    
     //Tabla 42 Configuration and Power Quality Registers
-
     Objregister[87].Config_Obj("IPEAK",0XE500,4);
     Objregister[88].Config_Obj("VPEAK",0XE501,4);
     Objregister[89].Config_Obj("STATUS0",0XE502,4);
@@ -376,95 +374,67 @@ void Config_registers(){
     Objregister[179].Config_Obj("VARTHR",0xEA03,1);
     Objregister[180].Config_Obj("VATHR",0xEA04,1);
 }
+
 //Función para leer todos los registros de una sola vez
 void Read_all_registers(){
     int i=0,Valueobj=0,a;
     string Nameobj;
-    //unsigned t0,t1;
     while(i<181){
-/*        if(i>= 96 && i<=122){
-            for(a=0;a<5;a++){
-               //t0=clock();
-                Objregister[i].Read();
-                Valueobj=Objregister[i].GetValue();
-                Nameobj=Objregister[i].GetName();
-                dataj["registers"][Nameobj]={{Nameobj,Valueobj}};
-                //t1 = clock();
-                //double time = (double(t1-t0)/CLOCKS_PER_SEC);
-                //cout << "Execution Time: " << time << endl;  
-            }
-            
-            i++;
-        }
-        else{*/
-            
-           // for(a=0;a<10;a++){
-                
-                Objregister[i].Read();
-                Valueobj=Objregister[i].GetValue();
-                Nameobj=Objregister[i].GetName();
-                dataj["registers"][Nameobj][a]=Valueobj;
-                cout<<Nameobj;
-                printf(" = %x\n",Valueobj);
-            
-              
-            //}
-            i++; 
-       // }
+        // leer todos los registros y cargarlos en el Json
+        Objregister[i].Read();
+        Valueobj=Objregister[i].GetValue();
+        Nameobj=Objregister[i].GetName();
+        dataj["registers"][Nameobj][a]=Valueobj;
+        cout<<Nameobj;
+        printf(" = %x\n",Valueobj);
+        i++; 
     }
 }
-//Función para leer los registros de  0xE50C a 0xE526
+//Función para leer los registros de  0xE50C a 0xE526 en secuencia una tras otro sin necesidad de hacer varios llamados
 void Burst_mode(){
     int i=0,Len_dato=108,cont=0,Corrimiento=0,Temp=0,Valueobj=0,a;
     string Nameobj;
-    char dir[2];
-    char buf[Len_dato];
+    char dir[2]; //Variable para separar los datos en dos bloques de 8 bits
+    char buf[Len_dato]; //Longitud del dato a recibir 
     //separar la dirección del registro en dos partes para enviarla por el bus
     dir[1]=0x0C;
     dir[0]=0xE5;
     //iniciar puerto raspberry
     //bcm2835_init();
     init = I2C_BEGIN;
-    if (!bcm2835_init())
-    {
-      printf("bcm2835_init failed. Are you running as root??\n");
+    if (!bcm2835_init()){
+      printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
     }
     // I2C begin if specified    
-    if (init == I2C_BEGIN)
-    {
-      if (!bcm2835_i2c_begin())
-      {
-        printf("bcm2835_i2c_begin failed. Are you running as root??\n");
+    if (init == I2C_BEGIN){
+      if (!bcm2835_i2c_begin()){
+        printf("Falló bcm2835_begin, corra el programa con permisos de administrador\n");//("bcm2835_i2c_begin failed. Are you running as root??\n");
       }
     }
     //Cargar dirección del esclavo
     bcm2835_i2c_setSlaveAddress(slave_address);
     //Cargar la frecuencia del clock
     bcm2835_i2c_setClockDivider(clk_div);
-    //cout<<"Name del registro: "<<endl;
-    //printf("La dirección es:0x%x%x \n", dir[0],dir[1]);
-    //printf("Longitud del dato %d byte\n", Len_dato);
     //Cargar variable buf con el Value
     bcm2835_i2c_read_register_rs(dir,buf,Len_dato);
-    
-    /*for (i=0; i<Len_dato; i++) {
-                if(buf[i] != 'n') printf("Read Buf[%d] = %x\n", i, buf[i]);
-        }*/
-    
+        
     cont=0;
     for (i=122 ; i>=96; i--){// del obj 96 hasta el 122 son los resgistros que lee la dsp
-            Objregister[i].SetValue(0);
-            Temp=0;
+            Objregister[i].SetValue(0);// Limpiar valor
+            Temp=0;//variable temporal par armar el dato de cada registro
+            // Separación del valor del registro en el bus recibido 
             for(Corrimiento=0;Corrimiento<=3; Corrimiento++){
                 Temp+=buf[Len_dato-cont-1] << 8*Corrimiento;
                 cont++;
             }
+            // Carga del valor en recibido en el objeto
             Objregister[i].SetValue(Temp);
+            // extracción del valor del objeto para guardarlo en el Json
             Valueobj=Objregister[i].GetValue();
             Nameobj=Objregister[i].GetName();
             dataj[std::to_string(Samples)][Nameobj]=Valueobj;
     }
-    
+    // Se termina la comunicación para no saturar el bus
     bcm2835_i2c_end();   
     bcm2835_close();
 }
@@ -478,7 +448,7 @@ void Stop_DSP(){
     Objregister[71].SetValue(0x0000);
     Objregister[71].Write();
 }
-//Programa principal
+// Inicializar el chip con los pasos descritos por el fabricante
 void Initializing_the_chipset(){
     int Value,i;
     string Name;
@@ -517,7 +487,6 @@ void Initializing_the_chipset(){
     for(i=0;i<10;i+=3){
             Objregister[i].SetValue(0x0);
             Objregister[i].Write();
-           // i=i+3;
     }
     printf("Done\n");
     //Escribir un 1 en el registro RUN(0xE228)
@@ -580,7 +549,7 @@ void Initializing_the_chipset(){
     }
     //PHSING
     //Objregister[149].SetValue(0x0);
-    //HSDC_CFG
+    //HSDC_CFG bus de alta velocidad 
     Objregister[157].SetValue(0x1);
     Objregister[157].Write();
     //CONFIG
@@ -598,7 +567,6 @@ void Initializing_the_chipset(){
     Objregister[155].SetValue(0x0);
     //CFCYC
     Objregister[156].SetValue(0x01);
-    
     
     for(i=151;i<=156;i++){
         Objregister[i].Write();
@@ -630,8 +598,8 @@ void Initializing_the_chipset(){
         Objregister[i].Read();
     }
     printf("Done");
-    //limbiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS), and Bit 11 (CF3DIS)
-    printf("limbiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS), and Bit 11 (CF3DIS)\n");
+    //limpiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS) y Bit 11 (CF3DIS)
+    printf("limpiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS) y Bit 11 (CF3DIS)\n");
     Objregister[142].SetValue(0x88);
     printf("Done\n");
     
@@ -639,34 +607,25 @@ void Initializing_the_chipset(){
     printf("Leyendo todos los registros de la DSP\n");
     Read_all_registers();
     printf("Done\n");
-    
-    
 }
+
+//Programa principal
 int main() {
     int i=0,Valueobj;
-    string Nameobj;
-    //unsigned t0,t1;  
+    string Nameobj;  
     //Iniciar el bus de la rasberry
     bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
     //Pasos para inicializar el CHIP ADE
     Initializing_the_chipset();
-    // read a JSON file
-    //std::ifstream a("/home/pi/Desktop/Programa/ade-metering-angular/src/data.json");
-    //a >> dataj;
+    // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
-    b >> modificadorj;
-    //std::ofstream o("/home/pi/Desktop/Programa/ade-metering-angular/src/data.json"); 
-    //o << std::setw(4) << dataj << std::endl;
-    
+    b >> modificadorj; 
     std::cout << std::setw(4) << modificadorj << '\n';
-    
-    
     auto Write = modificadorj.find("Write");
-    //Run_DSP();
-    //Burst_mode();
-    //Stop_DSP();
+
+    // ciclo infinito donde permanece el programa
     while(1){
         dataj["id"]=1;
         b.close();
@@ -677,7 +636,7 @@ int main() {
             b.close();
             //Objregister[71].Read();
             t0=clock();
-            //Run_DSP();
+            Run_DSP();
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode(); 
                 delay(100);
@@ -694,7 +653,7 @@ int main() {
             //dataj[std::to_string(Samples_)][std::to_string(time)]=time;
             cout << "Execution Time: " << time << endl;
         }
-        //Stop_DSP();
+        Stop_DSP();
         //Objregister[100].Read();
         sleep(1);
     }
