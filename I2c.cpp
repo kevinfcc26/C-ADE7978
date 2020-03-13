@@ -402,9 +402,9 @@ void Burst_mode(){
     //iniciar puerto raspberry
     //bcm2835_init();
     init = I2C_BEGIN;
-    // if (!bcm2835_init()){
-    //   printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
-    // }
+    if (!bcm2835_init()){
+      printf("Falló bcm2835_init, corra el programa con permisos de administrador\n");//("bcm2835_init failed. Are you running as root??\n");
+    }
     // I2C begin if specified    
     if (init == I2C_BEGIN){
       if (!bcm2835_i2c_begin()){
@@ -637,7 +637,7 @@ int main() {
             b.close();
             //Objregister[71].Read();
             t0=clock();
-            Run_DSP();
+            //Run_DSP();
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode();   
                 bcm2835_close();
