@@ -456,7 +456,6 @@ void Initializing_the_chipset(){
     bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     
-    Stop_DSP();
     //Comprobar que el pin IRQ1 este en 0
     while(bcm2835_gpio_lev(IRQ1_N)){
         printf("El pin IRQ1 esta en 1\n");
