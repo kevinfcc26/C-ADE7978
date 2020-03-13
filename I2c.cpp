@@ -645,8 +645,8 @@ int main() {
             b >> modificadorj;
             Write = modificadorj.find("Write");
             //std::cout << std::setw(4) << modificadorj << '\n';
-            remove("/home/pi/Desktop/Programa/read-send-json/db.json");
-            std::ofstream o("/home/pi/Desktop/Programa/read-send-json/db.json"); 
+            remove("./read-send-json/db.json");
+            std::ofstream o("./read-send-json/db.json"); 
             o << std::setw(4) << dataj << std::endl;
             t1=clock();
             double time = (double(t1-t0)/CLOCKS_PER_SEC);
@@ -654,19 +654,8 @@ int main() {
             cout << "Execution Time: " << time << endl;
         }
         Stop_DSP();
-        //Objregister[100].Read();
         sleep(1);
     }
-    
-    
-    // write prettified JSON to another file
-    
-    //std::cout << std::setw(4) << dataj << '\n';
-    
-    /*auto CONFIG = je.find("CONFIG");
-    std::cout << "\"CONFIG\" was found: " << (CONFIG != je.end()) << '\n';
-    std::cout << "value at key \"CONFIG\": " << *CONFIG << '\n';
-    */
     bcm2835_close();
     return 0;
 }
