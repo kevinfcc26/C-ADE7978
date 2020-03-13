@@ -631,6 +631,7 @@ int main() {
         b.close();
         b.open("modificador.json");
         b >> modificadorj;
+        std::cout << std::setw(4) << modificadorj << '\n';
         Write = modificadorj.find("Write");
         while(*Write==1){
             b.close();
@@ -655,7 +656,7 @@ int main() {
         }
         Stop_DSP();
         bcm2835_close();
-        sleep(1);
+        //sleep(1);
         
     }
     bcm2835_close();
