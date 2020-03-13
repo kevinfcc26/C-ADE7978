@@ -639,8 +639,7 @@ int main() {
             t0=clock();
             Run_DSP();
             for(Samples=0;Samples<=100;Samples++){
-                Burst_mode(); 
-                bcm2835_i2c_end();   
+                Burst_mode();   
                 bcm2835_close();
                 //delay(1);
             }
