@@ -23,7 +23,9 @@ void Config_registers(); //Función para declarar todos los parametros de los re
 void Burst_mode(); //Función para leer todos los registros de energia
 void Run_DSP(); //Pone en marcha la dsp
 void Stop_DSP(); // Apaga la dsp
-void Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
+int Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
+int Reset();// Reinicia toda la tarjeta para configurarla nuevamente
+
 
 typedef enum {
     NO_ACTION,
@@ -448,13 +450,46 @@ void Stop_DSP(){
     Objregister[71].SetValue(0x0000);
     Objregister[71].Write();
 }
+
+int Reset(){
+    int Value;
+    
+    //iniciar el reinicio de la tarjeta
+    Objregister[150].SetValue(0x90);
+    Objregister[150].Write();
+
+    printf("Reiniciando...\n");
+
+    // Leer los puertos y el registro RSTDONE
+    while(bcm2835_gpio_lev(IRQ1_N)){
+        printf("El pin IRQ1_N se encuentra en 1\n");
+    }
+    printf("El pin IRQ1_N se encuentra en 0\n");
+
+    //Esperar que el bit RSTDONE del registro STATUS1 se encuentre en 1 
+    do{
+
+        printf("Espeando que el bit RSTDONE se encuentre en 1\n ");
+        Objregister[90].Read();
+        Value=Objregister[90].GetValue();
+        
+    }while(!((Value & 0x8000) != 0x8000 ));
+    printf("El bit RSTDONE del registro STATUS1 se encuentra en 1\n");
+    
+    //Escribir un 1 en el bit RSTDONE en el registro STATUS1
+    printf("Escribiendo un 1 en el bit RSTDONE para reiniciar IRQ1_N\n");
+    Objregister[90].SetValue(0x8000);
+    Objregister[90].Write();
+    printf("****Reinicio finalizado****\n");
+
+    return 1;
+
+}
+
 // Inicializar el chip con los pasos descritos por el fabricante
-void Initializing_the_chipset(){
+int Initializing_the_chipset(){
     int Value,i;
     string Name;
-    //Configurar pines de entrada 
-    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
-    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     
     //Comprobar que el pin IRQ1 este en 0
     while(bcm2835_gpio_lev(IRQ1_N)){
@@ -469,7 +504,7 @@ void Initializing_the_chipset(){
     printf("Value= %x\n",Value);
     if((Value & 0x8000) != 0x8000){
         printf("RSTDONE se encuentra en 0\n");
-        return;
+        return 0; // retorna el 0 si ocurre un error en la configuración
     }
     printf("RSTDONE se encuentra en 1\n Cargando 1 en todas las banderas de STATUS0 y STATUS1...\n");
     Objregister[89].SetValue(0x7FFFF);
@@ -553,7 +588,7 @@ void Initializing_the_chipset(){
     Objregister[157].SetValue(0x1);
     Objregister[157].Write();
     //CONFIG
-    Objregister[150].SetValue(0x0050);
+    Objregister[150].SetValue(0x0050);//activar el puerto HSCD
     Objregister[150].Write();
     //MMODE
     Objregister[151].SetValue(0x1C);
@@ -607,18 +642,39 @@ void Initializing_the_chipset(){
     printf("Leyendo todos los registros de la DSP\n");
     Read_all_registers();
     printf("Done\n");
+
+    return 1;
 }
 
 //Programa principal
 int main() {
     int i=0,Valueobj,tempstop=0;
     string Nameobj;  
+    //Configurar pines de entrada 
+    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     //Iniciar el bus de la rasberry
     bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
+    //Reiniciar toda la tarjeta para eliminar errores
+    if(!Reset()){
+
+        printf("El reinicio no se pudo completar...\n Reintentando...");
+        return 0;
+    }
+
     //Pasos para inicializar el CHIP ADE
-    Initializing_the_chipset();
+    if(!Initializing_the_chipset()){
+
+        printf("La inicialización no se pudo completar...\n");
+        printf("Reiniciando la tarjeta...");
+        if(!Reset()){
+            printf("El reinicio no se pudo completar...");
+        }
+
+    }
+    
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj; 
@@ -627,22 +683,22 @@ int main() {
 
     // ciclo infinito donde permanece el programa
     while(1){
-        dataj["id"]=1;
+        dataj["id"]=1;// Identificador Json para el front
         b.close();
         b.open("modificador.json");
         b >> modificadorj;
         std::cout << std::setw(4) << modificadorj << '\n';
         Write = modificadorj.find("Write");
         while(*Write==1){
+
             b.close();
-            //Objregister[71].Read();
             t0=clock();
-            //Run_DSP();
+
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode();   
                 bcm2835_close();
-                delay(1);
             }
+
             b.open("modificador.json");
             b >> modificadorj;
             Write = modificadorj.find("Write");
