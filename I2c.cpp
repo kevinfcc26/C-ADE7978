@@ -23,8 +23,8 @@ void Config_registers(); //Función para declarar todos los parametros de los re
 void Burst_mode(); //Función para leer todos los registros de energia
 void Run_DSP(); //Pone en marcha la dsp
 void Stop_DSP(); // Apaga la dsp
-int Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
-int Reset();// Reinicia toda la tarjeta para configurarla nuevamente
+void Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
+void Reset();// Reinicia toda la tarjeta para configurarla nuevamente
 
 
 typedef enum {
@@ -451,7 +451,7 @@ void Stop_DSP(){
     Objregister[71].Write();
 }
 //Reset
-int Reset(){
+void Reset(){
     int Value;
     
     // Configurar pines de entrada 
@@ -485,12 +485,12 @@ int Reset(){
     Objregister[90].Write();
     printf("****Reinicio finalizado****\n");
 
-    return 1;
+    // return 1;
 
-}
+ }
 
 // Inicializar el chip con los pasos descritos por el fabricante
-int Initializing_the_chipset(){
+void Initializing_the_chipset(){
     int Value,i;
     string Name;
 
@@ -511,7 +511,7 @@ int Initializing_the_chipset(){
     printf("Value= %x\n",Value);
     if((Value & 0x8000) != 0x8000){
         printf("RSTDONE se encuentra en 0\n");
-        return 0; // retorna el 0 si ocurre un error en la configuración
+        return ; // retorna el 0 si ocurre un error en la configuración
     }
     printf("RSTDONE se encuentra en 1\n Cargando 1 en todas las banderas de STATUS0 y STATUS1...\n");
     Objregister[89].SetValue(0x7FFFF);
@@ -650,7 +650,6 @@ int Initializing_the_chipset(){
     Read_all_registers();
     printf("Done\n");
 
-    return 1;
 }
 
 //Programa principal
@@ -662,16 +661,8 @@ int main() {
     bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
-    //Reiniciar toda la tarjeta para eliminar errores
-    printf("Inicio Reinicio\n");
-    i=Reset();
-    if(i==0){
-        printf("El reinicio no se pudo completar...\n Reintentando...");
-        return 0;
-    }
-
     //Pasos para inicializar el CHIP ADE
-    i = Initializing_the_chipset();
+    Initializing_the_chipset();
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj; 
