@@ -658,8 +658,8 @@ int main() {
     //configurar los registros como Objetos
     Config_registers();
     //Reiniciar toda la tarjeta para eliminar errores
-    if(!Reset()){
-
+    i=Reset();
+    if(i=0){
         printf("El reinicio no se pudo completar...\n Reintentando...");
         return 0;
     }
@@ -674,7 +674,7 @@ int main() {
         }
 
     }
-    
+
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj; 
@@ -718,7 +718,7 @@ int main() {
         }
         
         //bcm2835_close();
-        sleep(1);
+        // sleep(1);
         
     }
     bcm2835_close();
