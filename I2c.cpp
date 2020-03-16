@@ -454,6 +454,9 @@ void Stop_DSP(){
 int Reset(){
     int Value;
     
+    //Configurar pines de entrada 
+    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     //iniciar el reinicio de la tarjeta
     Objregister[150].SetValue(0x90);
     Objregister[150].Write();
@@ -490,6 +493,10 @@ int Reset(){
 int Initializing_the_chipset(){
     int Value,i;
     string Name;
+
+    //Configurar pines de entrada 
+    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     
     //Comprobar que el pin IRQ1 este en 0
     while(bcm2835_gpio_lev(IRQ1_N)){
@@ -653,9 +660,9 @@ int main() {
     
     //Iniciar el bus de la rasberry
     bcm2835_init();
-    //Configurar pines de entrada 
-    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
-    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
+    
+    
+    
     //configurar los registros como Objetos
     Config_registers();
     //Reiniciar toda la tarjeta para eliminar errores
