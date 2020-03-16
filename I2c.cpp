@@ -477,7 +477,7 @@ int Reset(){
         Value=Objregister[90].GetValue();
         
     }while(!((Value & 0x8000) != 0x8000 ));
-    printf("El bit RSTDONE del registro STATUS1 se encuentra en 1\n");
+    printf("El bit RSTDONE del registro STATUS1 se encuentra en 0\n");
     
     //Escribir un 1 en el bit RSTDONE en el registro STATUS1
     printf("Escribiendo un 1 en el bit RSTDONE para reiniciar IRQ1_N\n");
@@ -660,9 +660,6 @@ int main() {
     
     //Iniciar el bus de la rasberry
     bcm2835_init();
-    
-    
-    
     //configurar los registros como Objetos
     Config_registers();
     //Reiniciar toda la tarjeta para eliminar errores
@@ -674,16 +671,7 @@ int main() {
     }
 
     //Pasos para inicializar el CHIP ADE
-    if(!Initializing_the_chipset()){
-
-        printf("La inicialización no se pudo completar...\n");
-        printf("Reiniciando la tarjeta...");
-        if(!Reset()){
-            printf("El reinicio no se pudo completar...");
-        }
-
-    }
-
+    Initializing_the_chipset();
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj; 
