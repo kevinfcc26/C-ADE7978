@@ -450,7 +450,7 @@ void Stop_DSP(){
     Objregister[71].SetValue(0x0000);
     Objregister[71].Write();
 }
-
+//Reset
 int Reset(){
     int Value;
     
@@ -462,7 +462,7 @@ int Reset(){
 
     // Leer los puertos y el registro RSTDONE
     while(bcm2835_gpio_lev(IRQ1_N)){
-        printf("El pin IRQ1_N se encuentra en 1\n");
+        printf("El pin IRQ1 esta en 1\n");
     }
     printf("El pin IRQ1_N se encuentra en 0\n");
 
