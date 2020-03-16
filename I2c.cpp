@@ -659,7 +659,7 @@ int main() {
     Config_registers();
     //Reiniciar toda la tarjeta para eliminar errores
     i=Reset();
-    if(i=0){
+    if(i==0){
         printf("El reinicio no se pudo completar...\n Reintentando...");
         return 0;
     }
