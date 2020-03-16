@@ -671,7 +671,7 @@ int main() {
     }
 
     //Pasos para inicializar el CHIP ADE
-    Initializing_the_chipset();
+    i = Initializing_the_chipset();
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj; 
