@@ -650,14 +650,16 @@ int Initializing_the_chipset(){
 int main() {
     int i=0,Valueobj,tempstop=0;
     string Nameobj;  
+    
+    //Iniciar el bus de la rasberry
+    bcm2835_init();
     //Configurar pines de entrada 
     bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
-    //Iniciar el bus de la rasberry
-    bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
     //Reiniciar toda la tarjeta para eliminar errores
+    printf("Inicio Reinicio\n");
     i=Reset();
     if(i==0){
         printf("El reinicio no se pudo completar...\n Reintentando...");
