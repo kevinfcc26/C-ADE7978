@@ -454,9 +454,9 @@ void Stop_DSP(){
 int Reset(){
     int Value;
     
-    //Configurar pines de entrada 
-    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
-    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
+    // Configurar pines de entrada 
+    // bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
+    // bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     //iniciar el reinicio de la tarjeta
     Objregister[150].SetValue(0x90);
     Objregister[150].Write();
@@ -464,10 +464,10 @@ int Reset(){
     printf("Reiniciando...\n");
 
     // Leer los puertos y el registro RSTDONE
-    while(bcm2835_gpio_lev(IRQ1_N)){
-        printf("El pin IRQ1 esta en 1\n");
-    }
-    printf("El pin IRQ1_N se encuentra en 0\n");
+    // while(bcm2835_gpio_lev(IRQ1_N)){
+        // printf("El pin IRQ1 esta en 1\n");
+    // }
+    // printf("El pin IRQ1_N se encuentra en 0\n");
 
     //Esperar que el bit RSTDONE del registro STATUS1 se encuentre en 1 
     do{
