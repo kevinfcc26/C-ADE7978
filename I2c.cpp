@@ -455,8 +455,8 @@ void Reset(){
     int Value;
     
     // Configurar pines de entrada 
-    // bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
-    // bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
     //iniciar el reinicio de la tarjeta
     Objregister[150].SetValue(0x90);
     Objregister[150].Write();
