@@ -10,7 +10,7 @@
 #include <fstream>
 #include <ctime>
 
-#define IRQ1_N 11 //
+#define IRQ1_N 11
 #define IRQ0_N 4
 
 using namespace std;
@@ -453,12 +453,18 @@ void Stop_DSP(){
 //Reset
 void Reset(){
     int Value;
+    string Name;
     
+    
+    
+<<<<<<< HEAD
     // Configurar pines de entrada 
     bcm2835_gpio_fsel(IRQ1_N, BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(IRQ0_N, BCM2835_GPIO_FSEL_INPT);
+=======
+>>>>>>> 8c390c9bbb6b1a26e94cb3d690b64d915e100fd2
     //iniciar el reinicio de la tarjeta
-    Objregister[150].SetValue(0x90);
+    Objregister[150].SetValue(0x80);
     Objregister[150].Write();
 
     printf("Reiniciando...\n");
@@ -466,18 +472,19 @@ void Reset(){
     // Leer los puertos y el registro RSTDONE
     // while(bcm2835_gpio_lev(IRQ1_N)){
         // printf("El pin IRQ1 esta en 1\n");
+        // sleep(100);
     // }
     // printf("El pin IRQ1_N se encuentra en 0\n");
 
     //Esperar que el bit RSTDONE del registro STATUS1 se encuentre en 1 
     do{
-
-        printf("Espeando que el bit RSTDONE se encuentre en 1\n ");
+        sleep(5);
+        printf("El bit RSTDONE se encuenta en 0\n ");
         Objregister[90].Read();
         Value=Objregister[90].GetValue();
         
-    }while(!((Value & 0x8000) != 0x8000 ));
-    printf("El bit RSTDONE del registro STATUS1 se encuentra en 0\n");
+    }while(!((Value & 0x8000) == 0x8000 ));
+    printf("El bit RSTDONE del registro STATUS1 se encuentra en 1\n");
     
     //Escribir un 1 en el bit RSTDONE en el registro STATUS1
     printf("Escribiendo un 1 en el bit RSTDONE para reiniciar IRQ1_N\n");
@@ -500,6 +507,7 @@ void Initializing_the_chipset(){
     
     //Comprobar que el pin IRQ1 este en 0
     while(bcm2835_gpio_lev(IRQ1_N)){
+
         printf("El pin IRQ1 esta en 1\n");
     }
     printf("El pin IRQ1_N se encuentra en 0\n");
@@ -511,7 +519,7 @@ void Initializing_the_chipset(){
     printf("Value= %x\n",Value);
     if((Value & 0x8000) != 0x8000){
         printf("RSTDONE se encuentra en 0\n");
-        return ; // retorna el 0 si ocurre un error en la configuración
+        // return ; // retorna el 0 si ocurre un error en la configuración
     }
     printf("RSTDONE se encuentra en 1\n Cargando 1 en todas las banderas de STATUS0 y STATUS1...\n");
     Objregister[89].SetValue(0x7FFFF);
@@ -680,7 +688,7 @@ int main() {
         while(*Write==1){
 
             b.close();
-            t0=clock();
+            // t0=clock();
 
             for(Samples=0;Samples<=100;Samples++){
                 Burst_mode();   
@@ -694,10 +702,10 @@ int main() {
             remove("./read-send-json/db.json");
             std::ofstream o("./read-send-json/db.json"); 
             o << std::setw(4) << dataj << std::endl;
-            t1=clock();
-            double time = (double(t1-t0)/CLOCKS_PER_SEC);
+            // t1=clock();
+            // double time = (double(t1-t0)/CLOCKS_PER_SEC);
             //dataj[std::to_string(Samples_)][std::to_string(time)]=time;
-            cout << "Execution Time: " << time << endl;
+            // cout << "Execution Time: " << time << endl;
             if(tempstop==1){tempstop=0;}
         }
         while(tempstop==0){
