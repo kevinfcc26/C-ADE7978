@@ -133,10 +133,10 @@ void Registro::Read()
         Value += buf[i] << 8 * (Len_dato - i - 1);
     }
     // Conversión resgistros de corriiente
-    if (Name == "AIRMS" || Name == || "BIRMS" || Name == "CIRMS" ||
+    if (Name == "AIRMS" || Name == "BIRMS" || Name == "CIRMS" ||
         Name == "NIRMS" || Name == "ISUM")
     {
-        Value = (1.35 * pow(10, -3) * Value + 2.8 * pow(10, -4)) * 5320000 / 0.03125;
+        Value = (Value * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
     }
 
     //termina la comunicación para no sobresaturar el puerto
