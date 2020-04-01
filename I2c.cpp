@@ -421,7 +421,7 @@ void Read_all_registers()
             Valueobj = (Temp * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
             Objregister[i].SetConValue(Valueobj);
             Nameobj = Objregister[i].GetName();
-            dataj["registers"][Nameobj][a] = Valueobj;
+            dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
             printf(" = %x\n", Valueobj);
         }
@@ -430,7 +430,7 @@ void Read_all_registers()
             Objregister[i].Read();
             Valueobj = Objregister[i].GetValue();
             Nameobj = Objregister[i].GetName();
-            dataj["registers"][Nameobj][a] = Valueobj;
+            dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
             printf(" = %x\n", Valueobj);
         }
@@ -710,7 +710,7 @@ void Initializing_the_chipset()
     {
         Objregister[i].Read();
     }
-    printf("Done");
+    printf("Done\n");
     //limpiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS) y Bit 11 (CF3DIS)
     printf("limpiar los Bit 9 (CF1DIS), Bit 10 (CF2DIS) y Bit 11 (CF3DIS)\n");
     Objregister[142].SetValue(0x88);
