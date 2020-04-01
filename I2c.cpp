@@ -49,19 +49,22 @@ json dataj, modificadorj;
 class Registro
 {
 private:
-    int Adress;   //Dirección en exadecimal del registro
-    int Len_dato; // Longitud del dato esperado
-    string Name;  // Nombre del registro
-    float Value;  // Valor escrito o leido del registro
+    int Adress;     //Dirección en exadecimal del registro
+    int Len_dato;   // Longitud del dato esperado
+    string Name;    // Nombre del registro
+    int Value;      // Valor escrito o leido del registro
+    float ConValue; // valor convertido
 
 public:
-    Registro(string, int, int);                                //1 contructor
-    Registro(){};                                              //2 constructor
-    string GetName();                                          //Función para optener el nombre
-    float GetValue();                                          //Función para optener el valor
-    void Read();                                               //Funciónn para optener los datos de la dsp
-    void Write();                                              //Función para escribir en la dsp
-    void SetValue(int _Value);                                 //Función para cargar un valor en la variable Valor del objeto
+    Registro(string, int, int); //1 contructor
+    Registro(){};               //2 constructor
+    string GetName();           //Función para optener el nombre
+    int GetValue();
+    float GetConValue();       //Función para optener el valor
+    void Read();               //Funciónn para optener los datos de la dsp
+    void Write();              //Función para escribir en la dsp
+    void SetValue(int _Value); //Función para cargar un valor en la variable Valor del objeto
+    void SetConValue(float _ConValue);
     void Config_Obj(string _Name, int _Adress, int _Len_dato); //Funcion para modificar los datos de los objetos
 };
 
@@ -78,14 +81,23 @@ string Registro::GetName()
     return Name;
 }
 // Obtiene el valor del objeto privado
-float Registro::GetValue()
+int Registro::GetValue()
 {
     return Value;
+}
+//
+float Registro::GetConValue()
+{
+    return ConValue;
 }
 // Modifica el valor del objeto
 void Registro::SetValue(int _Value)
 {
     Value = _Value;
+}
+void Registro::SetConValue(float _ConValue)
+{
+    ConValue = _ConValue;
 }
 //Carga todos los valores del objeto
 void Registro::Config_Obj(string _Name, int _Adress, int _Len_dato)
@@ -132,13 +144,6 @@ void Registro::Read()
     {
         Value += buf[i] << 8 * (Len_dato - i - 1);
     }
-    // Conversión resgistros de corriiente
-    if (Name == "AIRMS" || Name == "BIRMS" || Name == "CIRMS" ||
-        Name == "NIRMS" || Name == "ISUM")
-    {
-        Value = (Value * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
-    }
-
     //termina la comunicación para no sobresaturar el puerto
     bcm2835_i2c_end();
     bcm2835_close();
@@ -404,18 +409,31 @@ void Config_registers()
 //Función para leer todos los registros de una sola vez
 void Read_all_registers()
 {
-    int i = 0, Valueobj = 0, a;
+    int i = 0, Valueobj = 0, a, Temp = 0;
     string Nameobj;
     while (i < 181)
     {
-        // leer todos los registros y cargarlos en el Json
-
-        Objregister[i].Read();
-        Valueobj = Objregister[i].GetValue();
-        Nameobj = Objregister[i].GetName();
-        dataj["registers"][Nameobj][a] = Valueobj;
-        cout << Nameobj;
-        printf(" = %x\n", Valueobj);
+        //leer todos los registros y cargarlos en el Json
+        if (i == 56 || i == 59 || i == 62 || i == 65 || i == 66)
+        {
+            Objregister[i].Read();
+            Temp = Objregister[i].GetValue();
+            Valueobj = (Temp * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
+            Objregister[i].SetConValue(Valueobj);
+            Nameobj = Objregister[i].GetName();
+            dataj["registers"][Nameobj][a] = Valueobj;
+            cout << Nameobj;
+            printf(" = %x\n", Valueobj);
+        }
+        else
+        {
+            Objregister[i].Read();
+            Valueobj = Objregister[i].GetValue();
+            Nameobj = Objregister[i].GetName();
+            dataj["registers"][Nameobj][a] = Valueobj;
+            cout << Nameobj;
+            printf(" = %x\n", Valueobj);
+        }
         i++;
     }
 }
