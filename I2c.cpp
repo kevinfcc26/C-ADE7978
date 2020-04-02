@@ -21,11 +21,14 @@ using json = nlohmann::json; // Objeto para manejar los datos en formato Json
 
 void Read_all_registers();       //Función para leer todos los registros
 void Config_registers();         //Función para declarar todos los parametros de los registros tomados como objetos
-void Burst_mode();               //Función para leer todos los registros de energia
+void Burst_mode(int Samples);    //Función para leer todos los registros de energia
 void Run_DSP();                  //Pone en marcha la dsp
 void Stop_DSP();                 // Apaga la dsp
 void Initializing_the_chipset(); // Configura la dsp segun los pasos escritos en el datasheet
-void Reset();                    // Reinicia toda la tarjeta para configurarla nuevamente
+void Reset();
+void Read_registers(int Sample); // Reinicia toda la tarjeta para configurarla nuevamente
+void SetJsonCurrent(int Registro, int Sample);
+void SetJsonVol(int Registro, int Sample);
 
 typedef enum
 {
@@ -40,7 +43,7 @@ uint16_t clk_div = BCM2835_I2C_CLOCK_DIVIDER_626; // Clock establecido a 399.361
 uint8_t slave_address = 0x38;                     // Dirección de la tarjeta para el puerto I2C
 
 unsigned t0, t1;
-int Samples;
+// int Samples;
 
 // create a JSON object global
 json dataj, modificadorj;
@@ -423,7 +426,8 @@ void Read_all_registers()
             Nameobj = Objregister[i].GetName();
             dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
-            printf(" = %x\n", Valueobj);
+            cout << Valueobj;
+            // printf(" = %f\n", Valueobj);
         }
         else
         {
@@ -432,13 +436,14 @@ void Read_all_registers()
             Nameobj = Objregister[i].GetName();
             dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
-            printf(" = %x\n", Valueobj);
+            cout << Valueobj;
+            // printf(" = %x\n", Valueobj);
         }
         i++;
     }
 }
 //Función para leer los registros de  0xE50C a 0xE526 en secuencia una tras otro sin necesidad de hacer varios llamados
-void Burst_mode()
+void Burst_mode(int Samples)
 {
     int i = 0, Len_dato = 108, cont = 0, Corrimiento = 0, Temp = 0, Valueobj = 0, a;
     string Nameobj;
@@ -482,10 +487,10 @@ void Burst_mode()
         }
         // Carga del valor en recibido en el objeto
         Objregister[i].SetValue(Temp);
-        // extracción del valor del objeto para guardarlo en el Json
-        Valueobj = Objregister[i].GetValue();
-        Nameobj = Objregister[i].GetName();
-        dataj[std::to_string(Samples)][Nameobj] = Valueobj;
+        // TODO extracción del valor del objeto para guardarlo en el Json
+        // Valueobj = Objregister[i].GetValue();
+        // Nameobj = Objregister[i].GetName();
+        // dataj[std::to_string(Samples)][Nameobj] = Valueobj;
     }
     // Se termina la comunicación para no saturar el bus
     bcm2835_i2c_end();
@@ -721,11 +726,59 @@ void Initializing_the_chipset()
     Read_all_registers();
     printf("Done\n");
 }
+void SetJsonCurrent(int Registro, int Sample)
+{
+    int Temp = 0;
+    float Valueobj = 0;
+    string Nameobj;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    Valueobj = (Temp * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
+    Objregister[Registro].SetConValue(Valueobj);
+    Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+    cout << Nameobj;
+    cout << Valueobj;
+}
+void SetJsonVol(int Registro, int Sample)
+{
+    int Temp = 0;
+    float Valueobj = 0;
+    string Nameobj;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    Valueobj = Temp * 901 / 10640000;
+    Objregister[Registro].SetConValue(Valueobj);
+    Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+    cout << Nameobj;
+    cout << Valueobj;
+}
+void Read_registers(int Sample)
+{
+    int i = 0;
+
+    while (i < 181)
+    {
+        if (i == 56 || i == 59 || i == 62 || i == 65 || i == 66)
+        {
+
+            SetJsonCurrent(i, Sample);
+        }
+        else if (i == 57 || i == 60 || i == 63)
+        {
+            SetJsonVol(i, Sample);
+        }
+        i++;
+    }
+}
 
 //Programa principal
 int main()
 {
-    int i = 0, Valueobj, tempstop = 0;
+    int i = 0, Valueobj, tempstop = 0, Samples = 0;
     string Nameobj;
 
     //Iniciar el bus de la rasberry
@@ -757,8 +810,10 @@ int main()
 
             for (Samples = 0; Samples <= 100; Samples++)
             {
-                Burst_mode();
-                bcm2835_close();
+                Read_registers(Samples);
+                // Read_all_registers();
+                // Burst_mode(Samples);
+                // bcm2835_close();
             }
 
             b.open("modificador.json");
