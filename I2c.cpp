@@ -751,7 +751,7 @@ void SetJsonVol(int Registro, int Sample)
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
     // Valueobj = Temp * 901 / 10640000;
-    Valueobj = Temp * 19823 / (10640000 * 20);
+    Valueobj = Temp * (901150 / 1000) / (10640000);
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
