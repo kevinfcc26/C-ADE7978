@@ -734,7 +734,8 @@ void SetJsonCurrent(int Registro, int Sample)
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    Valueobj = (Temp * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
+    Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
+    // Valueobj = (Temp * (0.03125 / 5320000) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
