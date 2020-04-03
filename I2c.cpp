@@ -739,8 +739,8 @@ void SetJsonCurrent(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    cout << Nameobj;
-    cout << Valueobj;
+    cout << Nameobj << endl;
+    cout << Valueobj << endl;
 }
 void SetJsonVol(int Registro, int Sample)
 {
@@ -754,8 +754,8 @@ void SetJsonVol(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    cout << Nameobj;
-    cout << Valueobj;
+    cout << Nameobj << endl;
+    cout << Valueobj << endl;
 }
 void Read_registers(int Sample)
 {
