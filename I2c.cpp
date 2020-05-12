@@ -156,7 +156,7 @@ void Registro::Read()
 void Registro::Write()
 {
     int i;
-    char wbuf[Len_dato + 2]; //crar el bus con el ancho del dato enviado mas dos bytes de la dirección del registro
+    char wbuf[Len_dato + 2]; //crear el bus con el ancho del dato enviado mas dos bytes de la dirección del registro
     //limpiar buf
     for (i = 0; i < Len_dato + 2; i++)
     {
@@ -735,7 +735,8 @@ void SetJsonCurrent(int Registro, int Sample)
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
     // Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
-    Valueobj = (Temp * (0.03125 / 5320000) * (667 / 75) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
+    Valueobj = 4.2570*pow(10,-6)*Temp  - 0.1855 
+    // Valueobj = (Temp * (0.03125 / 5320000) * (667 / 75) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
