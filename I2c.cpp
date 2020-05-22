@@ -734,6 +734,7 @@ void SetJsonCurrent(int Registro, int Sample)
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
+    dataj[std::to_string(Sample)]["ADCI"]=Temp;
     // Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
     // Valueobj = 4.2570*pow(10,-6)*Temp  - 0.1855;
     //Valueobj = 4.2550*pow(10,-6)*Temp - 0.1858;
@@ -743,7 +744,7 @@ void SetJsonCurrent(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    dataj[std::to_string(Sample)]["ADCI"]=Temp;
+    
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
@@ -755,12 +756,13 @@ void SetJsonVol(int Registro, int Sample)
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
+    dataj[std::to_string(Sample)]["ADCV"]=Temp;
     // Valueobj = Temp * 901 / 10640000;
     Valueobj = Temp * (991150 / 1000) / (10640000);
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    dataj[std::to_string(Sample)]["ADCV"]=Temp;
+    
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
