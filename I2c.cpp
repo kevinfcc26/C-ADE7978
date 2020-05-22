@@ -747,7 +747,10 @@ void SetJsonCurrent(int Registro, int Sample)
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
     
+    if(Nameobj == "AIRMS"){
     sumI = sumI + Valueobj;
+    
+    }
 
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
@@ -767,7 +770,9 @@ void SetJsonVol(int Registro, int Sample)
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
 
-    sumV = sumV + Valueobj;
+    if(Nameobj == "AVRMS"){
+        sumV = sumV + Valueobj;
+    }
     
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
@@ -780,7 +785,6 @@ void Read_registers(int Sample)
     {
         if (i == 56 || i == 59 || i == 62 || i == 65 || i == 66)
         {
-
             SetJsonCurrent(i, Sample);
         }
         else if (i == 57 || i == 60 || i == 63)
