@@ -791,8 +791,8 @@ void Read_registers(int Sample)
     }
     if( Sample == 100 ){
 
-    averageV = averageV/100;
-    averageI = averageI/100;
+    averageV = averageV/101;
+    averageI = averageI/101;
     dataj["0"]["averageV"] = averageV;
     dataj["0"]["averageI"] = averageI;
 
@@ -835,7 +835,7 @@ int main()
             b.close();
             // t0=clock();
 
-            for (Samples = 0; Samples <= 100; Samples++)
+            for ( Samples = 0; Samples <= 100; Samples++ )
             {
                 Read_registers(Samples);
                 // Read_all_registers();
