@@ -743,7 +743,7 @@ void SetJsonCurrent(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    dataj[std::to_string(Sample)]['ADCI']=Temp;
+    dataj[std::to_string(Sample)]["ADCI"]=Temp;
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
@@ -760,7 +760,7 @@ void SetJsonVol(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
-    dataj[std::to_string(Sample)]['ADCV']=Temp;
+    dataj[std::to_string(Sample)]["ADCV"]=Temp;
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
