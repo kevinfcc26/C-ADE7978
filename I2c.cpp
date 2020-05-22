@@ -793,8 +793,8 @@ void Read_registers(int Sample)
 
     averageV = averageV/Sample;
     averageI = averageI/Sample;
-    dataj[0]["averageV"] = averageV;
-    dataj[0]["averageI"] = averageI;
+    dataj["0"]["averageV"] = averageV;
+    dataj["0"]["averageI"] = averageI;
     }
 }
 
