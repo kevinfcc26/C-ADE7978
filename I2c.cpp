@@ -798,6 +798,8 @@ void Read_registers(int Sample)
 
     averageV = 0;
     averageI = 0;
+    sumV = 0;
+    sumI = 0;
  
     }
 }
