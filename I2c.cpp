@@ -791,8 +791,8 @@ void Read_registers(int Sample)
     }
     if( Sample == 100 ){
 
-    averageV = averageV/Sample;
-    averageI = averageI/Sample;
+    averageV = averageV/100;
+    averageI = averageI/100;
     dataj["0"]["averageV"] = averageV;
     dataj["0"]["averageI"] = averageI;
 
