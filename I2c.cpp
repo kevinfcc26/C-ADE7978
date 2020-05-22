@@ -741,7 +741,7 @@ void SetJsonCurrent(int Registro, int Sample)
     // Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
     // Valueobj = 4.2570*pow(10,-6)*Temp  - 0.1855;
     //Valueobj = 4.2550*pow(10,-6)*Temp - 0.1858;
-    Valueobj = Temp*(4.2554*pow(10,-7)) - 0.1858;
+    Valueobj = Temp*(4.2554*pow(10,-6)) - 0.1858;
     // Valueobj = Temp;
     // Valueobj = (Temp * (0.03125 / 5320000) * (667 / 75) - (2.8 * pow(10, -4))) / (1.36 * pow(10, -3));
     Objregister[Registro].SetConValue(Valueobj);
