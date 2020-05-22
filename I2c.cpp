@@ -41,6 +41,8 @@ typedef enum
 uint8_t init = NO_ACTION;
 uint16_t clk_div = BCM2835_I2C_CLOCK_DIVIDER_626; // Clock establecido a 399.3610 kHz
 uint8_t slave_address = 0x38;                     // Dirección de la tarjeta para el puerto I2C
+float averageV = 0,averageI = 0; 
+
 
 unsigned t0, t1;
 // int Samples;
@@ -745,6 +747,8 @@ void SetJsonCurrent(int Registro, int Sample)
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
     
+    averageI += Valueobj;
+
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
@@ -762,6 +766,8 @@ void SetJsonVol(int Registro, int Sample)
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+
+    averageV += Valueobj;
     
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
@@ -782,6 +788,13 @@ void Read_registers(int Sample)
             SetJsonVol(i, Sample);
         }
         i++;
+    }
+    if( Sample == 100 ){
+
+    averageV = averageV/Sample;
+    averageI = averageI/Sample;
+    dataj[0]["averageV"] = averageV;
+    dataj[0]["averageI"] = averageI;
     }
 }
 
