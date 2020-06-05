@@ -729,6 +729,14 @@ void Initializing_the_chipset()
     Read_all_registers();
     printf("Done\n");
 }
+void SetJson(int Registro, int Sample, float Value){
+    // string Nameobj;
+
+    Objregister[Registro].SetConValue(Value);
+    // Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Objregister[Registro].GetName()] = Value;
+}
+// Cargar los valores de Corriente convertidos
 void SetJsonCurrent(int Registro, int Sample)
 {
     int Temp = 0;
@@ -756,6 +764,7 @@ void SetJsonCurrent(int Registro, int Sample)
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
+// Cargar los valores de Voltaje convertidos
 void SetJsonVol(int Registro, int Sample)
 {
     int Temp = 0;
@@ -778,19 +787,62 @@ void SetJsonVol(int Registro, int Sample)
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
 }
+
+void SetJsonPower(int Registro, int Sample){
+    int Temp = 0;
+    float Valueobj = 0;
+    string Nameobj;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    // dataj[std::to_string(Sample)]["ADCV"]=Temp;
+    // Valueobj = Temp * 901 / 10640000;
+    Valueobj = Temp * (991150 / 1000) / (10640000);
+    Objregister[Registro].SetConValue(Valueobj);
+    Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+
+    // if(Nameobj == "AVRMS"){
+    //     sumV = sumV + Valueobj;
+    // }
+}
+void SetJsonTHD(int Registro, int Sample){
+void SetJsonAngle(int Registro, int Sample){
+void SetJsonPF(int Registro, int Sample){
+    int Temp = 0;
+    float Valueobj = 0;
+    
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    if( Temp & 0x8000 == 0x8000 ){
+        Valueobj = ( Temp & 0xEFFF )* pow(2,-15); 
+    }else {
+        Valueobj = -( Temp & 0xEFFF )* pow(2,-15); 
+    }
+    SetJson(Registro, Sample, Valueobj);
+}
+// filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
 {
     int i = 0;
 
-    while (i < 181)
+    while ( i < 181 )
     {
-        if (i == 56 || i == 59 || i == 62 || i == 65 || i == 66)
+        if ( i == 56 || i == 59 || i == 62 || i == 65 || i == 66 || i == 127 || i == 129 || i == 131 )
         {
             SetJsonCurrent(i, Sample);
-        }
-        else if (i == 57 || i == 60 || i == 63)
+        } else if ( i == 57 || i == 60 || i == 63 || i == 126 || i == 128 || i ==130 || i == 132 )
         {
             SetJsonVol(i, Sample);
+        // } else if ( i == 72 || i == 73 || i == 74 || i == 75 || i == 76 || i == 77 || i == 78 || i == 79 || i == 80 || i == 81 || i == 82 || i == 83){
+        } else if ( i >= 72 && i <= 86 || i >= 108 && i <= 116 ){
+            SetJsonPower( i, Sample );
+        } else if ( i >= 117 && i <= 122 ){
+            SetJsonTHD( i, Sample );
+        } else if (  i >= 135 && i <= 137 ){
+            SetJsonAngle(i, Sample);
+        } else if ( i >= 165 && i <= 167 ){
+            SetJsonPF(i, Sample);
         }
         i++;
     }
