@@ -1,5 +1,3 @@
-
-
 setInterval(init, 50)
 
 function init() {
@@ -12,9 +10,9 @@ function init() {
         xhr.open("PUT", 'https://json-ade-metering.herokuapp.com/registers/1', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(registers));
-        console.log(registers);
-        console.log("ESCRIBE")
+        // console.log(registers);
+        // console.log("ESCRIBE")
     } catch {
-        console.log("ERROR")
+        // console.log("ERROR")
     }
 }
