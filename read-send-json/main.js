@@ -11,8 +11,8 @@ function init() {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(registers));
         // console.log(registers);
-        console.log("ESCRIBE")
+        // console.log("ESCRIBE")
     } catch {
-        console.log("ERROR")
+        // console.log("ERROR")
     }
 }
