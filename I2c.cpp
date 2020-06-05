@@ -795,9 +795,7 @@ void SetJsonPower(int Registro, int Sample){
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    // dataj[std::to_string(Sample)]["ADCV"]=Temp;
-    // Valueobj = Temp * 901 / 10640000;
-    Valueobj = Temp * (991150 / 1000) / (10640000);
+    Valueobj = Temp;
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
@@ -807,7 +805,30 @@ void SetJsonPower(int Registro, int Sample){
     // }
 }
 void SetJsonTHD(int Registro, int Sample){
+    int Temp = 0;
+    float Valueobj = 0;
+    string Nameobj;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    Valueobj = Temp;
+    Objregister[Registro].SetConValue(Valueobj);
+    Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+}
 void SetJsonAngle(int Registro, int Sample){
+    int Temp = 0;   
+    float Valueobj = 0;
+    string Nameobj;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    Valueobj = Temp;
+    Objregister[Registro].SetConValue(Valueobj);
+    Nameobj = Objregister[Registro].GetName();
+    dataj[std::to_string(Sample)][Nameobj] = Valueobj;
+}
+
 void SetJsonPF(int Registro, int Sample){
     int Temp = 0;
     float Valueobj = 0;
