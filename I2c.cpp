@@ -823,7 +823,7 @@ void SetJsonAngle(int Registro, int Sample){
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    Valueobj = cos( Temp * (360*60/250000) ) ;
+    Valueobj =  acos( Temp * (360*60/250000) ) ;
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
