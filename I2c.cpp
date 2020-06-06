@@ -750,9 +750,9 @@ void Current(int Registro, int Sample)
     Valueobj = Temp*(4.2554*pow(10,-6)) - 0.1858;
     SetJson(Registro, Sample, Valueobj);
     
-    if(Nameobj == "AIRMS"){
-        sumI = sumI + Valueobj;
-    }
+    // if(Nameobj == "AIRMS"){
+    //     sumI = sumI + Valueobj;
+    // }
 
 }
 // Cargar los valores de Voltaje convertidos
@@ -768,9 +768,9 @@ void Vol(int Registro, int Sample)
     Valueobj = Temp * (991150 / 1000) / (10640000);
     SetJson(Registro, Sample, Valueobj);
 
-    if(Nameobj == "AVRMS"){
-        sumV = sumV + Valueobj;
-    }
+    // if(Nameobj == "AVRMS"){
+    //     sumV = sumV + Valueobj;
+    // }
     
     // cout << Nameobj << endl;
     // cout << Valueobj << endl;
