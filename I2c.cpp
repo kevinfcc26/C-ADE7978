@@ -795,7 +795,7 @@ void THD(int Registro, int Sample){
     SetJson(Registro, Sample, Valueobj);
 }
 void Angle(int Registro, int Sample){
-    int Temp = 0;   
+    float Temp = 0;   
     float Valueobj = 0;
 
     Objregister[Registro].Read();
