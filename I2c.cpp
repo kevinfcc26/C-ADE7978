@@ -823,7 +823,7 @@ void SetJsonAngle(int Registro, int Sample){
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    Valueobj = Temp;
+    Valueobj = cos( Temp * (360*60/250000) ) ;
     Objregister[Registro].SetConValue(Valueobj);
     Nameobj = Objregister[Registro].GetName();
     dataj[std::to_string(Sample)][Nameobj] = Valueobj;
@@ -836,9 +836,9 @@ void SetJsonPF(int Registro, int Sample){
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
     if( Temp & 0x8000 == 0x8000 ){
-        Valueobj = ( Temp & 0xEFFF )* pow(2,-15); 
+        Valueobj = ( Temp & 0x7FFF )* pow(2,-15); 
     }else {
-        Valueobj = -( Temp & 0xEFFF )* pow(2,-15); 
+        Valueobj = -( Temp & 0x7FFF )* pow(2,-15); 
     }
     SetJson(Registro, Sample, Valueobj);
 }
@@ -849,18 +849,20 @@ void Read_registers(int Sample)
 
     while ( i < 181 )
     {
-        if ( i == 56 || i == 59 || i == 62 || i == 65 || i == 66 || i == 127 || i == 129 || i == 131 )
+        if ( i == 56 || i == 59 || i == 62 || i == 65 || i == 66 || i == 127 || i == 129 || i == 131 || i == 118 || i == 120 || i == 122  )
         {
             SetJsonCurrent(i, Sample);
-        } else if ( i == 57 || i == 60 || i == 63 || i == 126 || i == 128 || i ==130 || i == 132 )
+        } else if ( i == 57 || i == 60 || i == 63 || i == 126 || i == 128 || i ==130 || i == 132 || i == 117 || i == 119 || i == 121 )
         {
             SetJsonVol(i, Sample);
         // } else if ( i == 72 || i == 73 || i == 74 || i == 75 || i == 76 || i == 77 || i == 78 || i == 79 || i == 80 || i == 81 || i == 82 || i == 83){
         } else if ( i >= 72 && i <= 86 || i >= 108 && i <= 116 ){
             SetJsonPower( i, Sample );
-        } else if ( i >= 117 && i <= 122 ){
+        }
+         else if ( i >= 117 && i <= 122 ){
             SetJsonTHD( i, Sample );
-        } else if (  i >= 135 && i <= 137 ){
+        } 
+        else if (  i >= 135 && i <= 137 ){
             SetJsonAngle(i, Sample);
         } else if ( i >= 165 && i <= 167 ){
             SetJsonPF(i, Sample);
