@@ -37,7 +37,7 @@ int main(){
 
     MYSQL_RES *res_set;
     MYSQL_ROW row;
-    mysql_query (connect,"select id, name as nombre from test;");
+    mysql_query (connect,"INSERT INTO test VALUES (1,kevin)");
     unsigned int i =0;
     res_set = mysql_store_result(connect);
     unsigned int numrows = mysql_num_rows(res_set);
