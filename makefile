@@ -15,5 +15,5 @@
 mysql: mysql.o
 	g++ mysql.o -o mysql
 mysql.o: mysql.cpp
-	g++ -c -o mysql.o mysql.cpp
+	g++ -o mysql mysql.cpp -L/usr/include/mysql -l mysqlclient -I/usr/include/mysql
 # g++ -std=c++11 -I .../include -L .../lib64 app.cc -lmysqlcppconn8 -o app
