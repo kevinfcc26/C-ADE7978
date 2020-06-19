@@ -1,6 +1,6 @@
-CFLAGS= -I/usr/include/mysql
-LDFLAGS= -L/usr/include/mysql
-LDLIBS= -l mysqlclient
+# CFLAGS= -I/usr/include/mysql
+# LDFLAGS= -L/usr/include/mysql
+# LDLIBS= -l mysqlclient
 
 # I2c: I2c.o
 # 	g++ $(CFLAGS) $(LDFLAGSS) I2c.o $(LDLIBS) -o I2c
@@ -12,8 +12,6 @@ LDLIBS= -l mysqlclient
 # clean:
 # 	rm -rf *.o
 
-mysql: mysql.o
-	g++ $(CFLAGS) $(LDFLAGSS) mysql.o $(LDLIBS) -o mysql
-mysql.o: mysql.cpp
-	g++ -c -o mysql.o mysql.cpp   
+mysql: mysql.cpp
+	g++ -o mysql mysql.cpp -L/usr/include/mysql -l mysqlclient -I/usr/include/mysql
 # g++ -std=c++11 -I .../include -L .../lib64 app.cc -lmysqlcppconn8 -o app
