@@ -76,7 +76,7 @@ try {
 
   /* Create a connection */
   driver = get_driver_instance();
-  con = driver->connect(SERVER, USER, PASSWORD, DATABASE);
+  con = driver->connect(SERVER, USER, PASSWORD);
   /* Connect to the MySQL test database */
   con->setSchema("test");
 
