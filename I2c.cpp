@@ -812,7 +812,7 @@ void PF(int Registro, int Sample){
     Temp = Objregister[Registro].GetValue();
     Valueobj = Temp;
 
-    Valueobj = -( Temp & 0x7FFF )* pow(2,-15); 
+    Valueobj = Temp* pow(2,-15); 
     // if( Temp & 0x8000 == 0x8000 ){
     //     Valueobj = -( Temp & 0x7FFF )* pow(2,-15); 
     // }else {
