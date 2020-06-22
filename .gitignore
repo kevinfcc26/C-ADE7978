@@ -33,3 +33,5 @@
 
 db.json
 I2c
+
+.vscode/*

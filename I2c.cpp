@@ -200,9 +200,31 @@ void Registro::Write()
     bcm2835_close();
 }
 
+class RegisterCal{
+    private:
+        string Name;
+        float Value;
+    public:
+        RegisterCal(string name);
+        RegisterCal();
+
+        void conf(string name);
+        void set(float value);
+        float get();
+}
+RegisterCal::conf(string name){
+    Name = name;
+}
+float RegisterCal:: get(){
+    return  Value;
+}
+RegisterCal::set(float value){
+    Value = value;
+}
 //Arreglo de objetos
 // Primero se crea el arreglo de objetos y despues se le pasan los valores
 Registro Objregister[181];
+RegisterCal RCal[35];
 //Configurar Registros como objetos pasando ("Name",Adress,tamaño del dato en la memoria de la dsp en byte)
 void Config_registers()
 {
@@ -410,8 +432,46 @@ void Config_registers()
     Objregister[178].Config_Obj("WTHR", 0xEA02, 1);
     Objregister[179].Config_Obj("VARTHR", 0xEA03, 1);
     Objregister[180].Config_Obj("VATHR", 0xEA04, 1);
-}
 
+}
+void ConfigRCal(){
+    RCal[0].conf("AIHRMS_CAL");
+    RCal[1].conf("AVHRMS_CAL");
+    RCal[2].conf("APF1_CAL");
+    RCal[3].conf("AP1_CAL");
+    RCal[4].conf("APH_CAL");
+    RCal[5].conf("ASH_CAL");
+    RCal[6].conf("AS1_CAL");
+    RCal[7].conf("ASN_CAL");
+    RCal[8].conf("ADI_CAL");
+    RCal[9].conf("ADV_CAL");
+    RCal[10].conf("ADH_CAL");
+    RCal[11].conf("AN_CAL");
+    RCal[12].conf("BIHRMS_CAL");
+    RCal[13].conf("BVHRMS_CAL");
+    RCal[14].conf("BPF1_CAL");
+    RCal[15].conf("BP1_CAL");
+    RCal[16].conf("BPH_CAL");
+    RCal[17].conf("BSH_CAL");
+    RCal[18].conf("BS1_CAL");
+    RCal[19].conf("BSN_CAL");
+    RCal[20].conf("BDI_CAL");
+    RCal[21].conf("BDV_CAL");
+    RCal[22].conf("BDH_CAL");
+    RCal[23].conf("BN_CAL");
+    RCal[24].conf("CIHRMS_CAL");
+    RCal[25].conf("CVHRMS_CAL");
+    RCal[26].conf("CPF1_CAL");
+    RCal[27].conf("CP1_CAL");
+    RCal[28].conf("CPH_CAL");
+    RCal[29].conf("CSH_CAL");
+    RCal[30].conf("CS1_CAL");
+    RCal[31].conf("CSN_CAL");
+    RCal[32].conf("CDI_CAL");
+    RCal[33].conf("CDV_CAL");
+    RCal[34].conf("CDH_CAL");
+    RCal[35].conf("CN_CAL");
+}
 //Función para leer todos los registros de una sola vez
 void Read_all_registers()
 {
@@ -743,7 +803,6 @@ void Current(int Registro, int Sample)
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    dataj[std::to_string(Sample)]["ADCI"]=Temp;
     // Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
     // Valueobj = 4.2570*pow(10,-6)*Temp  - 0.1855;
     //Valueobj = 4.2550*pow(10,-6)*Temp - 0.1858;
@@ -791,7 +850,7 @@ void THD(int Registro, int Sample){
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    Valueobj = Temp;
+    Valueobj = 5.06 *pow(10,-7)*Temp - 3.82*pow(10,-3);
     SetJson(Registro, Sample, Valueobj);
 }
 void Angle(int Registro, int Sample){
@@ -820,6 +879,13 @@ void PF(int Registro, int Sample){
     // }
     SetJson(Registro, Sample, Valueobj);
 }
+float hrms(float t, float f ){
+    return sqrt(pow(t,2)-pow(f));
+}
+void SetMathParameters(){
+ RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
+ cout << RCal[0].get();
+}
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
 {
@@ -847,19 +913,7 @@ void Read_registers(int Sample)
         }
         i++;
     }
-    if( Sample == 100 ){
-
-    averageV = sumV/101;
-    averageI = sumI/101;
-    dataj["0"]["averageV"] = averageV;
-    dataj["0"]["averageI"] = averageI;
-
-    averageV = 0;
-    averageI = 0;
-    sumV = 0;
-    sumI = 0;
- 
-    }
+    SetMathParameters();
 }
 
 //Programa principal
