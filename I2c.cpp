@@ -489,8 +489,8 @@ void Read_all_registers()
             Nameobj = Objregister[i].GetName();
             dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
-            cout << Valueobj;
-            // printf(" = %f\n", Valueobj);
+            cout << Valueobj << endl;
+            printf(" = %f\n", Valueobj);
         }
         else
         {
@@ -499,7 +499,7 @@ void Read_all_registers()
             Nameobj = Objregister[i].GetName();
             dataj["registers"][Nameobj] = Valueobj;
             cout << Nameobj;
-            cout << Valueobj;
+            cout << Valueobj << endl;
             // printf(" = %x\n", Valueobj);
         }
         i++;
@@ -926,6 +926,7 @@ int main()
     bcm2835_init();
     //configurar los registros como Objetos
     Config_registers();
+    ConfigRCal();
     //Pasos para inicializar el CHIP ADE
     Initializing_the_chipset();
     // read a JSON file que modifica el funcionamiento de la tarjeta
