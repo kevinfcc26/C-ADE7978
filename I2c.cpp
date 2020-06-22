@@ -880,7 +880,7 @@ void PF(int Registro, int Sample){
     // }
     SetJson(Registro, Sample, Valueobj);
 }
-float hrms(float t, float f ){
+float hrm(float t, float f ){
     return sqrt(pow(t,2)-pow(f,2));
 }
 void SetMathParameters(){
