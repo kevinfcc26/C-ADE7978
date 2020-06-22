@@ -930,7 +930,7 @@ void SetMathParameters(){
     RCal[9].set( dv( RCal[1].get(), Objregister[127].GetConValue() ));
     RCal[10].set( dh( RCal[5].get(), RCal[4].get() ));
     RCal[11].set( n( Objregister[114].GetConValue(), Objregister[108].GetConValue() ));
-    for(int i; i<=11; i++){
+    for(int i = 0; i<=11; i++){
         cout << RCal[i].getName() << endl;
         cout << RCal[i].get() << endl;
     }
