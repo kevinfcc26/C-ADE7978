@@ -53,25 +53,25 @@ json dataj, modificadorj;
 //clase para los registros de la dsp
 class Registro
 {
-private:
-    int Adress;     //Dirección en exadecimal del registro
-    int Len_dato;   // Longitud del dato esperado
-    string Name;    // Nombre del registro
-    int Value;      // Valor escrito o leido del registro
-    float ConValue; // valor convertido
+    private:
+        int Adress;     //Dirección en exadecimal del registro
+        int Len_dato;   // Longitud del dato esperado
+        string Name;    // Nombre del registro
+        int Value;      // Valor escrito o leido del registro
+        float ConValue; // valor convertido
 
-public:
-    Registro(string, int, int); //1 contructor
-    Registro(){};               //2 constructor
+    public:
+        Registro(string, int, int); //1 contructor
+        Registro(){};               //2 constructor
 
-    string GetName();           //Función para optener el nombre
-    int GetValue();
-    float GetConValue();       //Función para optener el valor
-    void Read();               //Funciónn para optener los datos de la dsp
-    void Write();              //Función para escribir en la dsp
-    void SetValue(int _Value); //Función para cargar un valor en la variable Valor del objeto
-    void SetConValue(float _ConValue);
-    void Config_Obj(string _Name, int _Adress, int _Len_dato); //Funcion para modificar los datos de los objetos
+        string GetName();           //Función para optener el nombre
+        int GetValue();
+        float GetConValue();       //Función para optener el valor
+        void Read();               //Funciónn para optener los datos de la dsp
+        void Write();              //Función para escribir en la dsp
+        void SetValue(int _Value); //Función para cargar un valor en la variable Valor del objeto
+        void SetConValue(float _ConValue);
+        void Config_Obj(string _Name, int _Adress, int _Len_dato); //Funcion para modificar los datos de los objetos
 };
 
 // 1 contructor de objetos
@@ -200,7 +200,8 @@ void Registro::Write()
     bcm2835_close();
 }
 
-class RegisterCal{
+class RegisterCal
+{
     private:
         string Name;
         float Value;
@@ -211,7 +212,7 @@ class RegisterCal{
         void conf(string name);
         void set(float value);
         float get();
-}
+};
 RegisterCal::conf(string name){
     Name = name;
 }
@@ -880,7 +881,7 @@ void PF(int Registro, int Sample){
     SetJson(Registro, Sample, Valueobj);
 }
 float hrms(float t, float f ){
-    return sqrt(pow(t,2)-pow(f));
+    return sqrt(pow(t,2)-pow(f,2));
 }
 void SetMathParameters(){
  RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
