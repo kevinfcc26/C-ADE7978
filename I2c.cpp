@@ -884,7 +884,7 @@ float hrm(float t, float f ){
 }
 void SetMathParameters(){
  RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
- cout << RCal[0].get();
+ cout << RCal[0].get() << endl;
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
