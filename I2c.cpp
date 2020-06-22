@@ -206,7 +206,7 @@ class RegisterCal
         string Name;
         float Value;
     public:
-        RegisterCal();
+        RegisterCal(){};
 
         void conf(string name);
         void set(float value);
