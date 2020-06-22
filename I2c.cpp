@@ -909,7 +909,7 @@ float di( float v1, float ih){
     return v1*ih;
 }
 float dv( float vh, float i1){
-    return v1*ih;
+    return vh*i1;
 }
 float dh( float sh, float ph){
     return sqrt( pow(sh,2) - pow(ph,2));
