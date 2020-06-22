@@ -211,6 +211,7 @@ class RegisterCal
         void conf(string name);
         void set(float value);
         float get();
+        string getName();
 };
 void RegisterCal::conf(string name){
     Name = name;
@@ -220,6 +221,9 @@ float RegisterCal:: get(){
 }
 void RegisterCal::set(float value){
     Value = value;
+}
+string RegisterCal::getName(){
+    return Name;
 }
 //Arreglo de objetos
 // Primero se crea el arreglo de objetos y despues se le pasan los valores
@@ -614,6 +618,7 @@ void Reset()
     // return 1;
 }
 
+
 // Inicializar el chip con los pasos descritos por el fabricante
 void Initializing_the_chipset()
 {
@@ -879,12 +884,53 @@ void PF(int Registro, int Sample){
     // }
     SetJson(Registro, Sample, Valueobj);
 }
-float hrm(float t, float f ){
+float hrm( float t, float f  ){
     return sqrt(pow(t,2)-pow(f,2));
 }
+float pf1( float pf, float thdi ){
+    return pf*sqrt(1+thdi);
+}
+float s1( float i1, float v1 ){
+    return v1*i1;
+}
+float p1( float pf1, float s1 ){
+    return fabs(pf1*s1);
+}
+float ph( float p, float p1){
+    return p-p1;
+}
+float sh( float ih, float vh ){
+    return vh*ih;
+}
+float sn( float s, float s1 ){
+    return sqrt( pow(s,2) - pow(s1,2) );
+}
+float di( float v1, float ih){
+    return v1*ih;
+}
+float dh( float sh, float ph){
+    return sqrt( pow(sh,2) - pow(ph,2));
+}
+float n(float s, float p){
+    return sqrt(pow(s,2) - pow(p,2) );
+}
 void SetMathParameters(){
- RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
- cout << RCal[0].get() << endl;
+    RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
+    RCal[1].set( hrm( Objregister[57].GetConValue(), Objregister[128].GetConValue() ));
+    RCal[2].set( pf1( Objregister[165].GetConValue(), Objregister[118].GetConValue() ));
+    RCal[6].set( s1( Objregister[127].GetConValue(), Objregister[128].GetConValue() ));
+    RCal[3].set( p1( RCal[2].get(), RCal[6].get() ));
+    RCal[4].set( ph( Objregister[108].GetConValue(), RCal[3].get() ));
+    RCal[5].set( sh( RCal[0].get(), RCal[1].get() ));
+    RCal[7].set( sn( Objregister[114].GetConValue(), RCal[6].get() ));
+    RCal[8].set( di( Objregister[128].GetConValue(), RCal[0].get() ));
+    RCal[9].set( dv( RCal[1].get(), Objregister[127].GetConValue() ));
+    RCal[10].set( dh( RCal[5].get(), RCal[4].get() ));
+    RCal[11].set( n( Objregister[114].GetConValue(), Objregister[108].GetConValue() ));
+    for(int i; i<=11; i++){
+        cout << RCal[i].getName() << endl;
+        cout << RCal[i].get() << endl;
+    }
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
@@ -953,6 +999,7 @@ int main()
             for ( Samples = 0; Samples <= 100; Samples++ )
             {
                 Read_registers(Samples);
+                deley(1);
                 // Read_all_registers();
                 // Burst_mode(Samples);
                 // bcm2835_close();
