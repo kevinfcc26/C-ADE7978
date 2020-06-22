@@ -908,6 +908,9 @@ float sn( float s, float s1 ){
 float di( float v1, float ih){
     return v1*ih;
 }
+float dv( float vh, float i1){
+    return v1*ih;
+}
 float dh( float sh, float ph){
     return sqrt( pow(sh,2) - pow(ph,2));
 }
@@ -999,7 +1002,7 @@ int main()
             for ( Samples = 0; Samples <= 100; Samples++ )
             {
                 Read_registers(Samples);
-                deley(1);
+                sleep(1);
                 // Read_all_registers();
                 // Burst_mode(Samples);
                 // bcm2835_close();
