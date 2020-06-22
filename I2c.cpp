@@ -213,13 +213,13 @@ class RegisterCal
         void set(float value);
         float get();
 };
-RegisterCal::conf(string name){
+void RegisterCal::conf(string name){
     Name = name;
 }
 float RegisterCal:: get(){
     return  Value;
 }
-RegisterCal::set(float value){
+void RegisterCal::set(float value){
     Value = value;
 }
 //Arreglo de objetos
