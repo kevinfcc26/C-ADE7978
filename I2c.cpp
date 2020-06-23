@@ -985,8 +985,6 @@ void time(){
     time (&rawtime);
     timeinfo = localtime (&rawtime);
     printf ("Current local time and date: %s", asctime(timeinfo));
-
-    return "hola";
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
