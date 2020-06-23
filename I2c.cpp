@@ -962,8 +962,9 @@ void Query(){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
     string col = "";
     string values = "";
+    int i = 0;
 
-    for (int = 0 ; i< 181; i ++){
+    for ( i= 0 ; i < 181; i ++){
         col = col + Objregister[i].GetName();
         values = values+ std::to_string(Objregister[i].GetConValue());
     }
