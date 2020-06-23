@@ -983,7 +983,7 @@ void Query(){
     }
     for (   i = 0; i<= 35; i++ ){
         col = col + "'" + RCal[i].getName() + "'," ;
-        if(RCal[i].get() == nan){
+        if(RCal[i].get() == isnan){
             values = values + std::to_string( 0 ) + ",";
         }else {
         values = values + std::to_string( RCal[i].get() ) + ",";
