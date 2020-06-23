@@ -987,7 +987,7 @@ void Query(){
             values = values + '"' + std::to_string( 0 ) + '",';
         }else {
         values = values + '"' + std::to_string( RCal[i].get() );
-        values = values  + '",';
+        values = values  + `",`;
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + t() + '"' + ");";
