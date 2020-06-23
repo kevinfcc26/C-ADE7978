@@ -965,10 +965,11 @@ void Query(){
     int i = 0;
 
     for ( i= 0 ; i < 181; i ++){
-        col = col + "'" + Objregister[i].GetName() + ",";
+        if(i == 56 || i == 57 || i == 59 || i == 60 || i == 62 || i == 63 || i == 65 || i == 66 || i>=72 && i <= 86 || i >= 108 && i <= 123 || i >= 127 && i <= 132 || i >= 135 && i <= 137 || i >= 165 && i <= 167 || i >= 178 && i <= 180 )
+        col = col + "'" + Objregister[i].GetName() + "'" + ",";
         values = values+ std::to_string(Objregister[i].GetConValue()) + "," ;
     }
-    insert = insert + col + "values" + values + ")";
+    insert = insert + col + " ) VALUES (" + values + ")";
     cout << insert << endl;
 }
 // filtro para cargar los registros que se van a enviar
