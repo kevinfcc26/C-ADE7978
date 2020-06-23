@@ -958,7 +958,7 @@ void SetMathParameters(){
     RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
 
 }
-string void t(){
+string t(){
     time_t rawtime;
     struct tm * timeinfo;
     char buffer [80];
