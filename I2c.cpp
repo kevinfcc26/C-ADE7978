@@ -988,7 +988,7 @@ string time(){
 
     strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
     puts(timeString);
-    return timeString;
+    return std::to_string( timeString );
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
