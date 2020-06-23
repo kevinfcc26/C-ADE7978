@@ -965,15 +965,21 @@ void Query(){
 
     for ( i= 0 ; i < 181; i ++){
         if(i == 56 || i == 57 || i == 59 || i == 60 || i == 62 || i == 63 || i == 65 || i == 66 || i>=72 && i <= 86 || i >= 108 && i <= 122 || i >= 127 && i <= 132 || i >= 135 && i <= 137 || i >= 165 && i <= 167 ){
-        col = col + "'" + Objregister[i].GetName() + "'" + ",";
+        col = col + "'" + Objregister[i].GetName() + "',";
         values = values+ std::to_string(Objregister[i].GetConValue()) + "," ;
         }
     }
-    // for (   i = 0; i<= 35; i++ ){
-        
-    // }
-    insert = insert + col + " ) VALUES (" + values + ")";
+    for (   i = 0; i<= 35; i++ ){
+        col = col + "'" + RCal[i].getName() + "'," ;
+        values = values + std::to_string( RCal[i].get() );
+    }
+    
+    insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + time() ")";
     cout << insert << endl;
+}
+string time(){
+    time_t now = chrono::system_clock::to_time_t(chrono::system_clock::now());
+    return std::to_string( put_time(localtime(&now), "%F %T") )
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
