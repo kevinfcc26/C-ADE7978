@@ -958,6 +958,14 @@ void SetMathParameters(){
     RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
 
 }
+void t(){
+    time_t rawtime;
+    struct tm * timeinfo;
+
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    printf ("Current local time and date: %s", asctime(timeinfo));
+}
 void Query(){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
     string col = "";
@@ -974,18 +982,11 @@ void Query(){
         col = col + "'" + RCal[i].getName() + "'," ;
         values = values + std::to_string( RCal[i].get() );
     }
-    time();
+    t();
     insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + ")";
     cout << insert << endl;
 }
-void time(){
-    time_t rawtime;
-    struct tm * timeinfo;
 
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    printf ("Current local time and date: %s", asctime(timeinfo));
-}
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
 {
