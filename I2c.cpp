@@ -990,6 +990,7 @@ void Query(){
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + "`" + t() + "`" + ");";
+    cout << insert << endl;
 }
 
 // filtro para cargar los registros que se van a enviar
