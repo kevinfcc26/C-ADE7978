@@ -988,7 +988,7 @@ string time(){
 
     strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
     puts(timeString);
-    return 0;
+    return timeString;
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
