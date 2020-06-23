@@ -959,12 +959,12 @@ void SetMathParameters(){
 
 }
 void t(){
-    time_t rawtime;
-    struct tm * timeinfo;
+    time_t now = time(0);
 
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    printf ("Current local time and date: %s", asctime(timeinfo));
+   // convert now to string form
+   string dt = ctime(&now);
+
+   cout << "The local date and time is: " << dt << endl;
 }
 void Query(){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
