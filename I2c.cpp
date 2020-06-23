@@ -797,9 +797,9 @@ void Initializing_the_chipset()
 void SetJson(int Registro, int Sample, float Value){
 
     Objregister[Registro].SetConValue(Value);
-    cout << Objregister[Registro].GetName();
-    cout << Value << endl;
     dataj[std::to_string(Sample)][Objregister[Registro].GetName()] = Value;
+    cout << Objregister[Registro].GetName();
+    cout << Objregister[Registro].GetConValue();
 
 }
 // Cargar los valores de Corriente convertidos
