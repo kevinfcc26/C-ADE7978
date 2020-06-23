@@ -965,8 +965,8 @@ void Query(){
     int i = 0;
 
     for ( i= 0 ; i < 181; i ++){
-        col = col + Objregister[i].GetName();
-        values = values+ std::to_string(Objregister[i].GetConValue());
+        col = col + "'" + Objregister[i].GetName() + ",";
+        values = values+ std::to_string(Objregister[i].GetConValue()) + "," ;
     }
     insert = insert + col + "values" + values + ")";
     cout << insert << endl;
