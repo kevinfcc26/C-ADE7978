@@ -978,7 +978,7 @@ void Query(){
     insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + ")";
     cout << insert << endl;
 }
-string time(){
+void time(){
     time_t rawtime;
     struct tm * timeinfo;
 
