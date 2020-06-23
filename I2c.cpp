@@ -969,9 +969,9 @@ void Query(){
         values = values+ std::to_string(Objregister[i].GetConValue()) + "," ;
         }
     }
-    for (   i = 0; i<= 35; i++ ){
-        c
-    }
+    // for (   i = 0; i<= 35; i++ ){
+        
+    // }
     insert = insert + col + " ) VALUES (" + values + ")";
     cout << insert << endl;
 }
