@@ -978,13 +978,13 @@ void Query(){
     for ( i= 0 ; i < 181; i ++){
         if(i == 56 || i == 57 || i == 59 || i == 60 || i == 62 || i == 63 || i == 65 || i == 66 || i>=72 && i <= 86 || i >= 108 && i <= 122 || i >= 127 && i <= 132 || i >= 135 && i <= 137 || i >= 165 && i <= 167 ){
         col = col + "`" + Objregister[i].GetName() + "`,";
-        values = values+ std::to_string(Objregister[i].GetConValue()) + "," ;
+        values = values + "`" std::to_string(Objregister[i].GetConValue()) + "`," ;
         }
     }
     for (   i = 0; i<= 35; i++ ){
         col = col + "`" + RCal[i].getName() + "`," ;
         if(isnan(RCal[i].get())){
-            values = values + std::to_string( 0 ) + ",";
+            values = values + "`" + std::to_string( 0 ) + "`,";
         }else {
         values = values + "`" + std::to_string( RCal[i].get() ) + "`,";
         }
