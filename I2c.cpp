@@ -958,7 +958,7 @@ void SetMathParameters(){
     RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
 
 }
-void t(){
+string void t(){
     time_t rawtime;
     struct tm * timeinfo;
     char buffer [80];
@@ -967,7 +967,7 @@ void t(){
     timeinfo = localtime (&rawtime);
 
     strftime (buffer,80,"%F %T.",timeinfo);
-    cout << buffer << endl;
+    return buffer;
 }
 void Query(){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
@@ -985,8 +985,7 @@ void Query(){
         col = col + "'" + RCal[i].getName() + "'," ;
         values = values + std::to_string( RCal[i].get() );
     }
-    t();
-    insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + ")";
+    insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + "'" + t() + "'" + ")";
     cout << insert << endl;
 }
 
