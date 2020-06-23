@@ -798,7 +798,7 @@ void SetJson(int Registro, int Sample, float Value){
 
     Objregister[Registro].SetConValue(Value);
     cout << Objregister[Registro].GetName();
-    cout << Value << endl
+    cout << Value << endl;
     dataj[std::to_string(Sample)][Objregister[Registro].GetName()] = Value;
 
 }
