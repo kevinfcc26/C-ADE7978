@@ -962,7 +962,7 @@ void t(){
     time_t now = time(0);
 
    // convert now to string form
-   string dt = ctime(&now);
+   string dt = ctime(localtime(now));
 
    cout << "The local date and time is: " << dt << endl;
 }
