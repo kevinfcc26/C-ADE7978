@@ -8,7 +8,7 @@
 #include <json.hpp>
 #include <iomanip>
 #include <fstream>
-#include <ctime>
+#include <time.h>
 #include <math.h>
 
 #define IRQ1_N 11
@@ -979,16 +979,14 @@ void Query(){
     cout << insert << endl;
 }
 string time(){
-    time_t current_time;
-    struct tm * time_info;
-    char timeString[9];
+    time_t rawtime;
+    struct tm * timeinfo;
 
-    time(&current_time);
-    time_info = localtime(&current_time);
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    printf ("Current local time and date: %s", asctime(timeinfo));
 
-    strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
-    puts(timeString);
-    return std::to_string( timeString );
+    return "hola";
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
