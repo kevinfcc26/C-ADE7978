@@ -975,7 +975,7 @@ void Query(){
         values = values + std::to_string( RCal[i].get() );
     }
     
-    insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + time() ")";
+    insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + ")";
     cout << insert << endl;
 }
 string time(){
