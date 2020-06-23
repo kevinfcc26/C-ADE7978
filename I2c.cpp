@@ -10,13 +10,11 @@
 #include <fstream>
 #include <ctime>
 #include <math.h>
-#include <date.h>
 
 #define IRQ1_N 11
 #define IRQ0_N 4
 
 using namespace std;
-using namespace date;
 using namespace std::chrono;
 
 using json = nlohmann::json; // Objeto para manejar los datos en formato Json
