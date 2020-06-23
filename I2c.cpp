@@ -930,10 +930,45 @@ void SetMathParameters(){
     RCal[9].set( dv( RCal[1].get(), Objregister[127].GetConValue() ));
     RCal[10].set( dh( RCal[5].get(), RCal[4].get() ));
     RCal[11].set( n( Objregister[114].GetConValue(), Objregister[108].GetConValue() ));
-    for(int i = 0; i<=11; i++){
-        cout << RCal[i].getName() << endl;
-        cout << RCal[i].get() << endl;
+
+    RCal[12].set( hrm( Objregister[59].GetConValue(), Objregister[129].GetConValue() ));
+    RCal[13].set( hrm( Objregister[60].GetConValue(), Objregister[130].GetConValue() ));
+    RCal[14].set( pf1( Objregister[166].GetConValue(), Objregister[120].GetConValue() ));
+    RCal[18].set( s1( Objregister[129].GetConValue(), Objregister[130].GetConValue() ));
+    RCal[15].set( p1( RCal[14].get(), RCal[18].get() ));
+    RCal[16].set( ph( Objregister[109].GetConValue(), RCal[15].get() ));
+    RCal[17].set( sh( RCal[12].get(), RCal[13].get() ));
+    RCal[19].set( sn( Objregister[115].GetConValue(), RCal[18].get() ));
+    RCal[20].set( di( Objregister[130].GetConValue(), RCal[12].get() ));
+    RCal[21].set( dv( RCal[13].get(), Objregister[129].GetConValue() ));
+    RCal[22].set( dh( RCal[17].get(), RCal[16].get() ));
+    RCal[23].set( n( Objregister[115].GetConValue(), Objregister[109].GetConValue() ));
+
+    RCal[24].set( hrm( Objregister[62].GetConValue(), Objregister[131].GetConValue() ));
+    RCal[25].set( hrm( Objregister[63].GetConValue(), Objregister[132].GetConValue() ));
+    RCal[26].set( pf1( Objregister[167].GetConValue(), Objregister[122].GetConValue() ));
+    RCal[30].set( s1( Objregister[131].GetConValue(), Objregister[132].GetConValue() ));
+    RCal[27].set( p1( RCal[26].get(), RCal[30].get() ));
+    RCal[28].set( ph( Objregister[110].GetConValue(), RCal[27].get() ));
+    RCal[29].set( sh( RCal[24].get(), RCal[25].get() ));
+    RCal[31].set( sn( Objregister[116].GetConValue(), RCal[30].get() ));
+    RCal[32].set( di( Objregister[132].GetConValue(), RCal[24].get() ));
+    RCal[33].set( dv( RCal[25].get(), Objregister[131].GetConValue() ));
+    RCal[34].set( dh( RCal[29].get(), RCal[28].get() ));
+    RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
+
+}
+void Query(){
+    string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
+    string col = "";
+    string values = "";
+
+    for (int = 0 ; i< 181; i ++){
+        col = col + Objregister[i].GetName();
+        values = values+ std::to_string(Objregister[i].GetConValue());
     }
+    insert = insert + col + "values" + values + ")";
+    cout << insert << endl;
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
@@ -963,6 +998,7 @@ void Read_registers(int Sample)
         i++;
     }
     SetMathParameters();
+    Query();
 }
 
 //Programa principal
