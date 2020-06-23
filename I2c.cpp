@@ -979,7 +979,7 @@ void Query(){
 }
 string time(){
     time_t now = chrono::system_clock::to_time_t(chrono::system_clock::now());
-    return std::to_string( put_time(localtime(&now), "%F %T") )
+    return std::to_string( put_time(localtime(&now), "%F %T") );
 }
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
