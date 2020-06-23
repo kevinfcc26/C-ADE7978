@@ -985,8 +985,9 @@ void Query(){
         col = col + "'" + RCal[i].getName() + "'," ;
         if(RCal[i].get() == NAN){
             values = values + std::to_string( 0 ) + ",";
-        }
+        }else {
         values = values + std::to_string( RCal[i].get() ) + ",";
+        }
     }
     insert = insert + col + "'DATETIME'" + " ) VALUES (" + values + "'" + t() + "'" + ")";
     cout << insert << endl;
