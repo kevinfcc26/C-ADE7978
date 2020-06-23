@@ -799,7 +799,7 @@ void SetJson(int Registro, int Sample, float Value){
     Objregister[Registro].SetConValue(Value);
     dataj[std::to_string(Sample)][Objregister[Registro].GetName()] = Value;
     cout << Objregister[Registro].GetName();
-    cout << Objregister[Registro].GetConValue();
+    cout << Objregister[Registro].GetConValue() << endl;
 
 }
 // Cargar los valores de Corriente convertidos
