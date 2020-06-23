@@ -986,7 +986,7 @@ void Query(){
         if(isnan(RCal[i].get())){
             values = values + std::to_string( 0 ) + ",";
         }else {
-        values = values + std::to_string( RCal[i].get() ) + ",";
+        values = values + "`" + std::to_string( RCal[i].get() ) + "`,";
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + t() + '"' + ");";
