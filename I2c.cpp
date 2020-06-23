@@ -15,7 +15,6 @@
 #define IRQ0_N 4
 
 using namespace std;
-using namespace std::chrono;
 
 using json = nlohmann::json; // Objeto para manejar los datos en formato Json
 
@@ -980,7 +979,7 @@ void Query(){
     cout << insert << endl;
 }
 string time(){
-    time_t now = chrono::system_clock::to_time_t(chrono::system_clock::now());
+    time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     return std::to_string( now );
 }
 // filtro para cargar los registros que se van a enviar
