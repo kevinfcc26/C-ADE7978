@@ -974,7 +974,7 @@ string t(){
     strftime (buffer,80,"%F %T.",timeinfo);
     return buffer;
 }
-void mysqlSet( string query ){
+void mysqlSet( string &query ){
     MYSQL *connect;
     connect=mysql_init(NULL);
     if (!connect){
@@ -988,7 +988,7 @@ void mysqlSet( string query ){
     else{
         cout<<"connection failed\n";
     }
-    mysql_query (connect,query);
+    mysql_query (connect,&query);
     mysql_close (connect);
 }
 void Query(){
