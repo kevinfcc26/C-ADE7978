@@ -974,6 +974,23 @@ string t(){
     strftime (buffer,80,"%F %T.",timeinfo);
     return buffer;
 }
+void mysqlSet( string query ){
+    MYSQL *connect;
+    connect=mysql_init(NULL);
+    if (!connect){
+        cout<<"MySQL Initialization failed";
+        return 1;
+    }
+    connect=mysql_real_connect(connect, SERVER, USER, PASSWORD , DATABASE ,0,NULL,0);
+    if (connect){
+        cout<<"connection Succeeded\n";
+    }
+    else{
+        cout<<"connection failed\n";
+    }
+    mysql_query (connect,query);
+    mysql_close (connect);
+}
 void Query(){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
     string col = "";
@@ -998,23 +1015,7 @@ void Query(){
     // cout << insert << endl;
     mysqlSet(insert);
 }
-void mysqlSet( string query ){
-    MYSQL *connect;
-    connect=mysql_init(NULL);
-    if (!connect){
-        cout<<"MySQL Initialization failed";
-        return 1;
-    }
-    connect=mysql_real_connect(connect, SERVER, USER, PASSWORD , DATABASE ,0,NULL,0);
-    if (connect){
-        cout<<"connection Succeeded\n";
-    }
-    else{
-        cout<<"connection failed\n";
-    }
-    mysql_query (connect,query);
-    mysql_close (connect);
-}
+
 
 // filtro para cargar los registros que se van a enviar
 void Read_registers(int Sample)
