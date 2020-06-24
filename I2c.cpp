@@ -10,9 +10,14 @@
 #include <fstream>
 #include <time.h>
 #include <math.h>
+#include <mysql.h>
 
 #define IRQ1_N 11
 #define IRQ0_N 4
+#define SERVER "us-cdbr-east-05.cleardb.net"
+#define USER "b62ba68668ea1c"
+#define PASSWORD "4d0579fe"
+#define DATABASE "heroku_851e4397b87123b"
 
 using namespace std;
 
@@ -990,7 +995,25 @@ void Query(){
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + t() + '"' + ");";
-    cout << insert << endl;
+    // cout << insert << endl;
+    mysqlSet(insert);
+}
+void mysqlSet( string query ){
+    MYSQL *connect;
+    connect=mysql_init(NULL);
+    if (!connect){
+        cout<<"MySQL Initialization failed";
+        return 1;
+    }
+    connect=mysql_real_connect(connect, SERVER, USER, PASSWORD , DATABASE ,0,NULL,0);
+    if (connect){
+        cout<<"connection Succeeded\n";
+    }
+    else{
+        cout<<"connection failed\n";
+    }
+    mysql_query (connect,query);
+    mysql_close (connect);
 }
 
 // filtro para cargar los registros que se van a enviar
@@ -1037,6 +1060,7 @@ int main()
     ConfigRCal();
     //Pasos para inicializar el CHIP ADE
     Initializing_the_chipset();
+    
     // read a JSON file que modifica el funcionamiento de la tarjeta
     std::ifstream b("modificador.json");
     b >> modificadorj;
