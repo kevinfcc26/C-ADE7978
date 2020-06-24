@@ -1,6 +1,6 @@
-CFLAGS=-I/include
-LDFLAGS=-L/lib
-LDLIBS=-lbcm2835
+CFLAGS=-I/include -I/usr/include/mysql
+LDFLAGS=-L/lib -L/usr/include/mysql
+LDLIBS=-lbcm2835 -l mysqlclient
 
 I2c: I2c.o
 	g++ $(CFLAGS) $(LDFLAGSS) I2c.o $(LDLIBS) -o I2c
