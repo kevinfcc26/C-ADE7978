@@ -988,7 +988,7 @@ void mysqlSet( string query ){
     else{
         cout<<"connection failed\n";
     }
-    mysql_query (connect,query*);
+    mysql_query (connect, "" + query);
     mysql_close (connect);
 }
 void Query(){
