@@ -979,7 +979,7 @@ void mysqlSet( string query ){
     connect=mysql_init(NULL);
     if (!connect){
         cout<<"MySQL Initialization failed";
-        return 1;
+        // return 1;
     }
     connect=mysql_real_connect(connect, SERVER, USER, PASSWORD , DATABASE ,0,NULL,0);
     if (connect){
