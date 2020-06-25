@@ -1013,8 +1013,8 @@ void Query( int id ){
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + getTime() + '"' + ");";
-    cout << insert << endl;
-    // mysqlSet(insert);
+    // cout << insert << endl;
+    mysqlSet(insert);
 }
 
 
@@ -1046,7 +1046,7 @@ void Read_registers(int Sample)
         i++;
     }
     SetMathParameters();
-    Query(sample);
+    Query(Sample);
 }
 
 //Programa principal
@@ -1062,11 +1062,27 @@ int main()
     ConfigRCal();
     //Pasos para inicializar el CHIP ADE
     Initializing_the_chipset();
+    
+    // read a JSON file que modifica el funcionamiento de la tarjeta
+    std::ifstream b("modificador.json");
+    b >> modificadorj;
+    std::cout << std::setw(4) << modificadorj << '\n';
+    auto Write = modificadorj.find("Write");
 
     // ciclo infinito donde permanece el programa
     while (1)
     {
+        dataj["id"] = 1; // Identificador Json para el front
+        b.close();
+        b.open("modificador.json");
+        b >> modificadorj;
+        std::cout << std::setw(4) << modificadorj << '\n';
+        Write = modificadorj.find("Write");
+        while (*Write == 1)
         {
+
+            b.close();
+
             for ( Samples = 0; Samples <= 5263; Samples++ )
             {
                 Read_registers(Samples);
@@ -1081,6 +1097,7 @@ int main()
         {
             Stop_DSP();
             tempstop = 1;
+        }
     }
     bcm2835_close();
     return 0;
