@@ -1013,8 +1013,8 @@ void Query( int id ){
         }
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + getTime() + '"' + ");";
-    cout << insert << endl;
-    // mysqlSet(insert);
+    // cout << insert << endl;
+    mysqlSet(insert);
 }
 
 
