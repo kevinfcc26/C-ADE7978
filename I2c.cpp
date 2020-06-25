@@ -1083,7 +1083,7 @@ int main()
 
             b.close();
 
-            for ( Samples = 0; Samples <= 5263; Samples++ )
+            for ( Samples = 1; Samples <= 5263; Samples++ )
             {
                 Read_registers(Samples);
                 sleep(1);
