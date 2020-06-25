@@ -854,6 +854,15 @@ void Power(int Registro, int Sample){
     Valueobj = Temp*3.32 * pow(10,-3) - 23.2;
     SetJson(Registro, Sample, Valueobj);
 }
+void PowerHr(int Registro, int Sample){
+    int Temp = 0;
+    float Valueobj = 0;
+
+    Objregister[Registro].Read();
+    Temp = Objregister[Registro].GetValue();
+    Valueobj = Temp;
+    SetJson(Registro, Sample, Valueobj);
+}
 void THD(int Registro, int Sample){
     int Temp = 0;
     float Valueobj = 0;
@@ -889,11 +898,11 @@ void PF(int Registro, int Sample){
     SetJson(Registro, Sample, Valueobj);
 }
 
-float hrm( float t, float f  ){
-    return sqrt(pow(t,2)-pow(f,2));
+float hrm( float thd, float f  ){
+    return thd*f;
 }
 float pf1( float pf, float thdi ){
-    return pf*sqrt(1+thdi);
+    return pf*sqrt(1+pow(thdi,2));
 }
 float s1( float i1, float v1 ){
     return v1*i1;
@@ -923,8 +932,8 @@ float n(float s, float p){
     return sqrt(pow(s,2) - pow(p,2) );
 }
 void SetMathParameters(){
-    RCal[0].set( hrm( Objregister[56].GetConValue(), Objregister[127].GetConValue() ));
-    RCal[1].set( hrm( Objregister[57].GetConValue(), Objregister[128].GetConValue() ));
+    RCal[0].set( hrm( Objregister[118].GetConValue(), Objregister[127].GetConValue() ));
+    RCal[1].set( hrm( Objregister[117].GetConValue(), Objregister[128].GetConValue() ));
     RCal[2].set( pf1( Objregister[165].GetConValue(), Objregister[118].GetConValue() ));
     RCal[6].set( s1( Objregister[127].GetConValue(), Objregister[128].GetConValue() ));
     RCal[3].set( p1( RCal[2].get(), RCal[6].get() ));
@@ -936,8 +945,8 @@ void SetMathParameters(){
     RCal[10].set( dh( RCal[5].get(), RCal[4].get() ));
     RCal[11].set( n( Objregister[114].GetConValue(), Objregister[108].GetConValue() ));
 
-    RCal[12].set( hrm( Objregister[59].GetConValue(), Objregister[129].GetConValue() ));
-    RCal[13].set( hrm( Objregister[60].GetConValue(), Objregister[130].GetConValue() ));
+    RCal[12].set( hrm( Objregister[120].GetConValue(), Objregister[129].GetConValue() ));
+    RCal[13].set( hrm( Objregister[119].GetConValue(), Objregister[130].GetConValue() ));
     RCal[14].set( pf1( Objregister[166].GetConValue(), Objregister[120].GetConValue() ));
     RCal[18].set( s1( Objregister[129].GetConValue(), Objregister[130].GetConValue() ));
     RCal[15].set( p1( RCal[14].get(), RCal[18].get() ));
@@ -949,8 +958,8 @@ void SetMathParameters(){
     RCal[22].set( dh( RCal[17].get(), RCal[16].get() ));
     RCal[23].set( n( Objregister[115].GetConValue(), Objregister[109].GetConValue() ));
 
-    RCal[24].set( hrm( Objregister[62].GetConValue(), Objregister[131].GetConValue() ));
-    RCal[25].set( hrm( Objregister[63].GetConValue(), Objregister[132].GetConValue() ));
+    RCal[24].set( hrm( Objregister[122].GetConValue(), Objregister[131].GetConValue() ));
+    RCal[25].set( hrm( Objregister[121].GetConValue(), Objregister[132].GetConValue() ));
     RCal[26].set( pf1( Objregister[167].GetConValue(), Objregister[122].GetConValue() ));
     RCal[30].set( s1( Objregister[131].GetConValue(), Objregister[132].GetConValue() ));
     RCal[27].set( p1( RCal[26].get(), RCal[30].get() ));
@@ -1032,8 +1041,11 @@ void Read_registers(int Sample)
         {
             Vol(i, Sample);
         // } else if ( i == 72 || i == 73 || i == 74 || i == 75 || i == 76 || i == 77 || i == 78 || i == 79 || i == 80 || i == 81 || i == 82 || i == 83){
-        } else if ( i >= 72 && i <= 86 || i >= 108 && i <= 116 ){
+        } else if ( i >= 108 && i <= 116 ){
             Power( i, Sample );
+        }
+        else if(i >= 72 && i <= 86){
+            PowerHr( i, Sample );
         }
          else if ( i >= 117 && i <= 122 ){
             THD( i, Sample );
