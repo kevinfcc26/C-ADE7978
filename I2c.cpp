@@ -851,7 +851,7 @@ void Power(int Registro, int Sample){
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    Valueobj = Temp;
+    Valueobj = Temp*3.32 * pow(10,-3) - 23.2;
     SetJson(Registro, Sample, Valueobj);
 }
 void THD(int Registro, int Sample){
@@ -872,7 +872,6 @@ void Angle(int Registro, int Sample){
     Valueobj = Temp*360*60/256000 ;
     SetJson(Registro, Sample, Valueobj);
 }
-
 void PF(int Registro, int Sample){
     int Temp = 0;
     float Valueobj = 0;
@@ -889,6 +888,7 @@ void PF(int Registro, int Sample){
     // }
     SetJson(Registro, Sample, Valueobj);
 }
+
 float hrm( float t, float f  ){
     return sqrt(pow(t,2)-pow(f,2));
 }
@@ -963,7 +963,7 @@ void SetMathParameters(){
     RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
 
 }
-string t(){
+string getTime(){
     time_t rawtime;
     struct tm * timeinfo;
     char buffer [80];
@@ -991,12 +991,13 @@ void mysqlSet( string query ){
     mysql_query (connect, query.c_str());
     mysql_close (connect);
 }
-void Query(){
+void Query( int id ){
     string insert ="INSERT INTO `heroku_851e4397b87123b`.`register`(";
     string col = "";
     string values = "";
     int i = 0;
-
+    col = col + "`id`,";
+    values = values + std::to_string(id) + ",";
     for ( i= 0 ; i < 181; i ++){
         if(i == 56 || i == 57 || i == 59 || i == 60 || i == 62 || i == 63 || i == 65 || i == 66 || i>=72 && i <= 86 || i >= 108 && i <= 122 || i >= 127 && i <= 132 || i >= 135 && i <= 137 || i >= 165 && i <= 167 ){
         col = col + "`" + Objregister[i].GetName() + "`,";
@@ -1011,9 +1012,9 @@ void Query(){
         values = values + '"' + std::to_string( RCal[i].get() ) + '"' + ",";
         }
     }
-    insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + t() + '"' + ");";
-    // cout << insert << endl;
-    mysqlSet(insert);
+    insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + getTime() + '"' + ");";
+    cout << insert << endl;
+    // mysqlSet(insert);
 }
 
 
@@ -1045,7 +1046,7 @@ void Read_registers(int Sample)
         i++;
     }
     SetMathParameters();
-    Query();
+    Query(sample);
 }
 
 //Programa principal
@@ -1061,48 +1062,16 @@ int main()
     ConfigRCal();
     //Pasos para inicializar el CHIP ADE
     Initializing_the_chipset();
-    
-    // read a JSON file que modifica el funcionamiento de la tarjeta
-    std::ifstream b("modificador.json");
-    b >> modificadorj;
-    std::cout << std::setw(4) << modificadorj << '\n';
-    auto Write = modificadorj.find("Write");
 
     // ciclo infinito donde permanece el programa
     while (1)
     {
-        dataj["id"] = 1; // Identificador Json para el front
-        b.close();
-        b.open("modificador.json");
-        b >> modificadorj;
-        std::cout << std::setw(4) << modificadorj << '\n';
-        Write = modificadorj.find("Write");
-        while (*Write == 1)
         {
-
-            b.close();
-            // t0=clock();
-
-            for ( Samples = 0; Samples <= 100; Samples++ )
+            for ( Samples = 0; Samples <= 5263; Samples++ )
             {
                 Read_registers(Samples);
                 sleep(1);
-                // Read_all_registers();
-                // Burst_mode(Samples);
-                // bcm2835_close();
             }
-
-            b.open("modificador.json");
-            b >> modificadorj;
-            Write = modificadorj.find("Write");
-            //std::cout << std::setw(4) << modificadorj << '\n';
-            remove("./read-send-json/db.json");
-            std::ofstream o("./read-send-json/db.json");
-            o << std::setw(4) << dataj << std::endl;
-            // t1=clock();
-            // double time = (double(t1-t0)/CLOCKS_PER_SEC);
-            //dataj[std::to_string(Samples_)][std::to_string(time)]=time;
-            // cout << "Execution Time: " << time << endl;
             if (tempstop == 1)
             {
                 tempstop = 0;
@@ -1112,10 +1081,6 @@ int main()
         {
             Stop_DSP();
             tempstop = 1;
-        }
-
-        //bcm2835_close();
-        // sleep(1);
     }
     bcm2835_close();
     return 0;
