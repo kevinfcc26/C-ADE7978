@@ -855,13 +855,8 @@ void Power(int Registro, int Sample){
     SetJson(Registro, Sample, Valueobj);
 }
 void PowerHr(int Registro, int Sample){
-    int Temp = 0;
-    float Valueobj = 0;
-
     Objregister[Registro].Read();
-    Temp = Objregister[Registro].GetValue();
-    Valueobj = Temp;
-    SetJson(Registro, Sample, Valueobj);
+    SetJson(Registro, Sample, Objregister[Registro].GetValue());
 }
 void THD(int Registro, int Sample){
     int Temp = 0;
@@ -1037,7 +1032,7 @@ void Read_registers(int Sample)
         if ( i == 56 || i == 59 || i == 62 || i == 65 || i == 66 || i == 127 || i == 129 || i == 131 )
         {
             Current(i, Sample);
-        } else if ( i == 57 || i == 60 || i == 63 || i == 126 || i == 128 || i ==130 || i == 132 )
+        } else if ( i == 57 || i == 60 || i == 63 || i == 126 || i == 128 || i == 130 || i == 132 )
         {
             Vol(i, Sample);
         // } else if ( i == 72 || i == 73 || i == 74 || i == 75 || i == 76 || i == 77 || i == 78 || i == 79 || i == 80 || i == 81 || i == 82 || i == 83){
