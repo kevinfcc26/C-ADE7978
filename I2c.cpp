@@ -234,7 +234,7 @@ string RegisterCal::getName(){
 //Arreglo de objetos
 // Primero se crea el arreglo de objetos y despues se le pasan los valores
 Registro Objregister[181];
-RegisterCal RCal[35];
+RegisterCal RCal[62];
 //Configurar Registros como objetos pasando ("Name",Adress,tamaño del dato en la memoria de la dsp en byte)
 void Config_registers()
 {
@@ -481,6 +481,33 @@ void ConfigRCal(){
     RCal[33].conf("CDV_CAL");
     RCal[34].conf("CDH_CAL");
     RCal[35].conf("CN_CAL");
+    RCal[36].conf("IE_CAL");
+    RCal[37].conf("IE1_CAL");
+    RCal[38].conf("IEH_CAL");
+    RCal[39].conf("VAB_CAL");
+    RCal[40].conf("VAB1_CAL");
+    RCal[41].conf("VABH_CAL");
+    RCal[42].conf("VBC_CAL");
+    RCal[43].conf("VBC1_CAL");
+    RCal[44].conf("VBCH_CAL");
+    RCal[45].conf("VCA_CAL");
+    RCal[46].conf("VCA1_CAL");
+    RCal[47].conf("VCAH_CAL");
+    RCal[48].conf("VE_CAL");
+    RCal[49].conf("VE1_CAL");
+    RCal[50].conf("VEH_CAL");
+    RCal[51].conf("SE_CAL");
+    RCal[52].conf("SE1_CAL");
+    RCal[53].conf("SEH_CAL");
+    RCal[54].conf("DEI_CAL");
+    RCal[55].conf("DEV_CAL");
+    RCal[56].conf("SEN_CAL");
+    RCal[57].conf("THDEV_CAL");
+    RCal[58].conf("THDEI_CAL");
+    RCal[59].conf("PE_CAL");
+    RCal[60].conf("PEH_CAL");
+    RCal[61].conf("PFE_CAL");
+    RCal[62].conf("DEH_CAL");
 }
 //Función para leer todos los registros de una sola vez
 void Read_all_registers()
@@ -923,10 +950,44 @@ float dv( float vh, float i1){
 float dh( float sh, float ph){
     return sqrt( pow(sh,2) - pow(ph,2));
 }
-float n(float s, float p){
+float n( float s, float p){
     return sqrt(pow(s,2) - pow(p,2) );
 }
+float ie( float ia, float ib, float ic){
+    return sqrt(( pow(ia,2) + pow( ib, 2 ) + pow( ic, 2 ) )/3 );
+}
+float vll( float vl ){
+    return vl*sqrt(3);
+}
+float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
+    return sqrt( 1/18 * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
+}
+float se( float ve, float ie ){
+    return 3*ve*ie;
+}
+float dei( float ve1, float ieh ){
+    return 3*ve1*ieh;
+}
+float dev( float veh, float ie1 ){
+    return 3*veh*ie1;
+}
+float sen( float de1, float dev, float seh ){
+    return sqrt( pow(de1,2) + pow(dev,2) + pow(seh,2));
+}
+float thde( float eh, float ef ){
+    return eh/ef;
+}
+float pe( float pa, float pb, float pc ){
+    return pa+pb+pc;
+}
+float pfe( float pe, float se ){
+    return pe/se;
+}
+float deh( float seh, float peh ){
+    return sqrt( pow(seh,2) - pow(peh,2) );
+}
 void SetMathParameters(){
+    //Fase A
     RCal[0].set( hrm( Objregister[118].GetConValue(), Objregister[127].GetConValue() ));
     RCal[1].set( hrm( Objregister[117].GetConValue(), Objregister[128].GetConValue() ));
     RCal[2].set( pf1( Objregister[165].GetConValue(), Objregister[118].GetConValue() ));
@@ -939,7 +1000,7 @@ void SetMathParameters(){
     RCal[9].set( dv( RCal[1].get(), Objregister[127].GetConValue() ));
     RCal[10].set( dh( RCal[5].get(), RCal[4].get() ));
     RCal[11].set( n( Objregister[114].GetConValue(), Objregister[108].GetConValue() ));
-
+    // Fase B
     RCal[12].set( hrm( Objregister[120].GetConValue(), Objregister[129].GetConValue() ));
     RCal[13].set( hrm( Objregister[119].GetConValue(), Objregister[130].GetConValue() ));
     RCal[14].set( pf1( Objregister[166].GetConValue(), Objregister[120].GetConValue() ));
@@ -952,7 +1013,7 @@ void SetMathParameters(){
     RCal[21].set( dv( RCal[13].get(), Objregister[129].GetConValue() ));
     RCal[22].set( dh( RCal[17].get(), RCal[16].get() ));
     RCal[23].set( n( Objregister[115].GetConValue(), Objregister[109].GetConValue() ));
-
+    //Fase C
     RCal[24].set( hrm( Objregister[122].GetConValue(), Objregister[131].GetConValue() ));
     RCal[25].set( hrm( Objregister[121].GetConValue(), Objregister[132].GetConValue() ));
     RCal[26].set( pf1( Objregister[167].GetConValue(), Objregister[122].GetConValue() ));
@@ -965,6 +1026,44 @@ void SetMathParameters(){
     RCal[33].set( dv( RCal[25].get(), Objregister[131].GetConValue() ));
     RCal[34].set( dh( RCal[29].get(), RCal[28].get() ));
     RCal[35].set( n( Objregister[116].GetConValue(), Objregister[110].GetConValue() ));
+    //Corriente efectiva
+    RCal[36].set( ie( Objregister[56].GetConValue(), Objregister[59].GetConValue(), Objregister[62].GetConValue() ));
+    RCal[37].set( ie( Objregister[127].GetConValue(), Objregister[129].GetConValue(), Objregister[131].GetConValue() ));
+    RCal[38].set( ie( RCal[0].get(), RCal[12].get(), RCal[24].get() ));
+    //Volataje entre lineas
+    RCal[39].set( vll( Objregister[57].GetConValue() ));
+    RCal[40].set( vll( Objregister[128].GetConValue() ));
+    RCal[41].set( vll( RCal[1].get() ));
+    RCal[42].set( vll( Objregister[60].GetConValue() ));
+    RCal[43].set( vll( Objregister[130].GetConValue() ));
+    RCal[44].set( vll( RCal[13].get() ));
+    RCal[45].set( vll( Objregister[63].GetConValue() ));
+    RCal[46].set( vll( Objregister[132].GetConValue() ));
+    RCal[47].set( vll( RCal[25].get() ));
+    //Voltaje efectivo
+    RCal[48].set( ve( Objregister[57].GetConValue(), Objregister[60].GetConValue(), Objregister[63].GetConValue(), RCal[39].get(), RCal[42].get(), RCal[45].get() ));
+    RCal[49].set( ve( Objregister[128].GetConValue(), Objregister[130].GetConValue(), Objregister[132].GetConValue(), RCal[40].get(), RCal[43].get(), RCal[46].get() ));
+    RCal[50].set( ve( RCal[1].get(), RCal[13].get(), RCal[25].get(), RCal[41].get(), RCal[44].get(), RCal[47].get() ));
+    //Potencia efectiva
+    RCal[51].set( se( RCal[48].get(), RCal[36].get() ));
+    RCal[52].set( se( RCal[49].get(), RCal[37].get() ));
+    RCal[53].set( se( RCal[50].get(), RCal[38].get() ));
+    //distoricion en corriente
+    RCal[54].set( dei( RCal[49].get(), RCal[38].get() ));
+    //distorcion en voltaje
+    RCal[55].set( dev( RCal[50].get(), RCal[37].get() ));
+    //potencia aparente efectiva nofundamental
+    RCal[56].set( sen( RCal[54].get(), RCal[55].get(), RCal[53].get() ));
+    //thde
+    RCal[57].set( thde( RCal[50].get(), RCal[49].get() ));
+    RCal[58].set( thde( RCal[38].get(), RCal[37].get() ));
+    //Potencia activa efectiva
+    RCal[59].set( pe( Objregister[108].GetConValue(), Objregister[109].GetConValue(), Objregister[110].GetConValue() ));
+    RCal[60].set( pe( RCal[4].get(), RCal[16].get(), RCal[28].get() ));
+    //Pfe
+    RCal[61].set( pfe( RCal[59].get(), RCal[51].get() ));
+    //deh
+    RCal[62].set( deh( RCal[53].get(), RCal[60].get() ));
 
 }
 string getTime(){
@@ -1008,7 +1107,7 @@ void Query( int id ){
         values = values + '"' + std::to_string(Objregister[i].GetConValue()) + '"' + "," ;
         }
     }
-    for (   i = 0; i<= 35; i++ ){
+    for (   i = 0; i<= 62; i++ ){
         col = col + "`" + RCal[i].getName() + "`," ;
         if(isnan(RCal[i].get())){
             values = values + '"' + std::to_string( 0 ) + '"' + ",";
