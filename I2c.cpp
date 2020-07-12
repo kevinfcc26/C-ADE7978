@@ -912,13 +912,11 @@ void PF(int Registro, int Sample){
     
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    // if( (Temp  && 0x8000) == 0x8000 ){
-    //     // Valueobj = - not( Temp );
-    //     Valueobj = Temp * pow(2,-15); 
-    // } else{
-    //     Valueobj = Temp * pow(2,-15); 
-    // }
-    Valueobj = Temp * pow(2,-15);
+    if( (Temp  && 0x8000) == 0x8000 ){
+        Valueobj = - not( Temp );
+    } else{
+        Valueobj = Temp * pow(2,-15); 
+    }
     SetJson(Registro, Sample, Valueobj);
 }
 
