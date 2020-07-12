@@ -840,10 +840,13 @@ void Current(int Registro, int Sample)
 
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
-    // Valueobj = 769.231 * (5.224 * pow(10, -8) * Temp - 0.00028);
-    // Valueobj = 4.2570*pow(10,-6)*Temp  - 0.1855;
-    //Valueobj = 4.2550*pow(10,-6)*Temp - 0.1858;
-    Valueobj = Temp*(4.2554*pow(10,-6)) - 0.1858;
+    if( Registro == 56 || Registro == 127 ){
+        Valueobj = Temp*( 4.2554*pow(10,-6) ) - 0.18575;    
+    } else if ( Registro == 59 || Registro == 129 ){
+        Valueobj = Temp*( 4.3128*pow(10,-6) ) - 0.21065;
+    } else{
+        Valueobj = Temp*( 4.3084*pow(10,-6) ) - 0.20526;
+    }
     SetJson(Registro, Sample, Valueobj);
     
     // if(Nameobj == "AIRMS"){
