@@ -912,6 +912,9 @@ void PF(int Registro, int Sample){
     
     Objregister[Registro].Read();
     Temp = Objregister[Registro].GetValue();
+    if( (Temp  && 0x8000) == 0x8000 ){
+        Temp = not( Temp );
+    }
     Valueobj = Temp;
 
     Valueobj = Temp* pow(2,-15); 
