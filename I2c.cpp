@@ -960,6 +960,7 @@ float vll( float vl ){
     return vl*sqrt(3);
 }
 float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
+    printf(va, vb, vc, vab, vbc, vca);
     return sqrt( (1/18) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
 }
 float se( float ve, float ie ){
@@ -1117,7 +1118,7 @@ void Query( int id ){
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + getTime() + '"' + ");";
     // cout << insert << endl;
-    mysqlSet(insert);
+    // mysqlSet(insert);
 }
 
 
