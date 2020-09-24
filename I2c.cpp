@@ -965,7 +965,7 @@ float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
     p1 = 3*( pow(va,2) + pow(vb,2) + pow(vc,2) );
     p2 = pow(vab,2) + pow(vbc,2) + pow(vca,2);
     p3 = p1 + p2;
-    p4 = (1/18) * p3;
+    p4 = 55.5555 *pow(10, -3) * p3;
     cout << "p1: " << p1 << " p2: " << p2 << " p3: " << p3 << " p4: " << p4 << endl;
     total = 0;
     // total = sqrt( (1/18) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
