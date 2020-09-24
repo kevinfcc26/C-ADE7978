@@ -960,15 +960,9 @@ float vll( float vl ){
     return vl*sqrt(3);
 }
 float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
-    float total, p1, p2, p3, p4;
+    float total;
     cout <<"va: " << va << " vb: " << vb << " vc: " << vc << " vab: " << vab << " vbc: " << vbc << " vca: " << vca << endl;
-    p1 = 3*( pow(va,2) + pow(vb,2) + pow(vc,2) );
-    p2 = pow(vab,2) + pow(vbc,2) + pow(vca,2);
-    p3 = p1 + p2;
-    p4 = 55.5555 *pow(10, -3) * p3;
-    cout << "p1: " << p1 << " p2: " << p2 << " p3: " << p3 << " p4: " << p4 << endl;
-    total = 0;
-    // total = sqrt( (1/18) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
+    total = sqrt( (55.55*pow(10,-3)) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
     cout << "total" << total << endl;
     return total;
 }
