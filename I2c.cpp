@@ -960,11 +960,7 @@ float vll( float vl ){
     return vl*sqrt(3);
 }
 float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
-    float total;
-    cout <<"va: " << va << " vb: " << vb << " vc: " << vc << " vab: " << vab << " vbc: " << vbc << " vca: " << vca << endl;
-    total = sqrt( (55.55*pow(10,-3)) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
-    cout << "total" << total << endl;
-    return total;
+    return sqrt( (55.55*pow(10,-3)) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));;
 }
 float se( float ve, float ie ){
     return 3*ve*ie;
@@ -1121,7 +1117,7 @@ void Query( int id ){
     }
     insert = insert + col + "`DATETIME`" + " ) VALUES (" + values + '"' + getTime() + '"' + ");";
     // cout << insert << endl;
-    // mysqlSet(insert);
+    mysqlSet(insert);
 }
 
 
