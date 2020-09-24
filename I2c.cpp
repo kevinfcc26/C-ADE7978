@@ -960,7 +960,7 @@ float vll( float vl ){
     return vl*sqrt(3);
 }
 float ve( float va, float vb, float vc, float vab, float vbc, float vca ){
-    cout <<'va:' << va << ' vb:' << vb << ' vc:' << vc << ' vab:' << vab << ' vbc:' << vbc << ' vca:' << vca << endl;
+    cout <<'va: ' << va << endl;
     return sqrt( (1/18) * ( 3*( pow(va,2) + pow(vb,2) + pow(vc,2) ) + pow(vab,2) + pow(vbc,2) + pow(vca,2) ));
 }
 float se( float ve, float ie ){
